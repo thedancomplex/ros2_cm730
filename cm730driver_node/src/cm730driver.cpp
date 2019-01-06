@@ -37,7 +37,18 @@ namespace cm730driver
 
         auto nRead = 0;
         while (nRead < data.size())
-          nRead += read(data.data() + nRead, data.size() - nRead);
+        {
+          auto n = read(data.data() + nRead, data.size() - nRead);
+          if (n > 0)
+          {
+            nRead += n;
+            auto str = std::ostringstream{};
+            str << "Total read: " << nRead << " - ";
+            for (auto i = 0; i < nRead; ++i)
+              str << int{data[i]} << " ";
+            RCLCPP_INFO(get_logger(), str.str());
+          }
+        }
         
         response->pong.device_id = data[2];
       });
