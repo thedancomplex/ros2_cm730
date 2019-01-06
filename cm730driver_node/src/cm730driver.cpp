@@ -48,8 +48,8 @@ namespace cm730driver
           if (readingTime.nanoseconds() / 1e6 > 12)
           {
             RCLCPP_INFO(get_logger(), "Timed out");
-            data[2] = 255;
-            break;
+            response->pong.success = false;
+            return;
           }
           
           auto n = read(data.data() + nRead, data.size() - nRead);
@@ -65,7 +65,7 @@ namespace cm730driver
           rclcpp::sleep_for(100us);
         }
         
-        response->pong.device_id = data[2];
+        response->pong.success = true;
       });
   }
 
