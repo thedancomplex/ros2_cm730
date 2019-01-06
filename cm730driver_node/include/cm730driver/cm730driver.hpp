@@ -17,6 +17,11 @@ namespace cm730driver
     virtual ~Cm730Driver();
 
   private:
+    void open();
+    void close();
+    
+    int mDevice;
+    
     rclcpp::Service<cm730driver_msgs::srv::Ping>::SharedPtr mPingServer;
   };
   
