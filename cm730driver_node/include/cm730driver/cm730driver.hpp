@@ -19,6 +19,9 @@ namespace cm730driver
   private:
     void open();
     void close();
+
+    int write(uint8_t const* outPacket, size_t size);
+    int read(uint8_t* inPacket, size_t size);
     
     int mDevice;
     

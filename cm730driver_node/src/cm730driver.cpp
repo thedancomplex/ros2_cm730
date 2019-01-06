@@ -7,6 +7,8 @@
 #include <linux/serial.h>
 #include <sys/ioctl.h>
 
+#include <numeric>
+
 namespace cm730driver
 {
   
@@ -18,9 +20,20 @@ namespace cm730driver
     
     mPingServer = create_service<cm730driver_msgs::srv::Ping>(
       "ping",
-      [](std::shared_ptr<cm730driver_msgs::srv::Ping::Request> request,
+      [this](std::shared_ptr<cm730driver_msgs::srv::Ping::Request> request,
          std::shared_ptr<cm730driver_msgs::srv::Ping::Response> response)
       {
+        auto data = std::array<uint8_t, 6>{
+          0xFF, 0xFF,  // prefix
+          request->ping.device_id,  // device ID
+          2,  // length
+          1,  // instruction
+          0,  // checksum
+        };
+
+        auto sum = std::accumulate(std::next(data.begin(), 2), std::prev(data.end(), 1), 0u);
+        data[5] = ~sum;
+        write(data.data(), data.size());
         response->pong.device_id = request->ping.device_id;
       });
   }
@@ -79,7 +92,7 @@ namespace cm730driver
     // FLush all data received but not read
     tcflush(mDevice, TCIFLUSH);
 
-    RCLCPP_INFO(get_logger(), "Successfully opend CM730");
+    RCLCPP_INFO(get_logger(), "Successfully opened CM730");
   }
 
   void Cm730Driver::close()
@@ -93,6 +106,31 @@ namespace cm730driver
       }
     }
     mDevice = -1;
+    RCLCPP_INFO(get_logger(), "Successfully closed CM730");
+  }
+
+  int Cm730Driver::write(uint8_t const* outPacket, size_t size)
+  {
+    auto i = ::write(mDevice, outPacket, size);
+    if (i < long(size))
+    {
+      RCLCPP_ERROR(get_logger(), "Failed writing complete message to CM730");
+    }
+    else if (i < 0)
+    {
+      RCLCPP_ERROR(get_logger(), "Failed writing message to CM730");
+    }
+    return i;
+  }
+
+  int Cm730Driver::read(uint8_t* inPacket, size_t size)
+  {
+    auto i = ::read(mDevice, inPacket, size);
+    // If EAGAIN is set, there was no real error, just no data available
+    if (i < 0 && errno == EAGAIN)
+      i = 0;
+
+    return i;
   }
   
 }  // namespace cm730driver
