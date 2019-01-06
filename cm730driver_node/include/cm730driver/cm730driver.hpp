@@ -20,6 +20,8 @@ namespace cm730driver
     void open();
     void close();
 
+    void clear();
+    
     int write(uint8_t const* outPacket, size_t size);
     int read(uint8_t* inPacket, size_t size);
     

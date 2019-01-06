@@ -25,6 +25,8 @@ namespace cm730driver
       [this](std::shared_ptr<cm730driver_msgs::srv::Ping::Request> request,
          std::shared_ptr<cm730driver_msgs::srv::Ping::Response> response)
       {
+        clear();
+        
         auto data = std::array<uint8_t, 6>{
           0xFF, 0xFF,  // prefix
           request->ping.device_id,  // device ID
@@ -43,8 +45,9 @@ namespace cm730driver
         while (nRead < data.size())
         {
           auto readingTime = now() - readStartTime;
-          if (readingTime.nanoseconds() > 12e6)
+          if (readingTime.nanoseconds() / 1e6 > 12)
           {
+            RCLCPP_INFO(get_logger(), "Timed out");
             data[2] = 255;
             break;
           }
@@ -137,6 +140,11 @@ namespace cm730driver
     RCLCPP_INFO(get_logger(), "Successfully closed CM730");
   }
 
+  void Cm730Driver::clear()
+  {
+    tcflush(mDevice, TCIFLUSH);
+  }
+  
   int Cm730Driver::write(uint8_t const* outPacket, size_t size)
   {
     auto i = ::write(mDevice, outPacket, size);
