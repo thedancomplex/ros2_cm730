@@ -34,7 +34,12 @@ namespace cm730driver
         auto sum = std::accumulate(std::next(data.begin(), 2), std::prev(data.end(), 1), 0u);
         data[5] = ~sum;
         write(data.data(), data.size());
-        response->pong.device_id = request->ping.device_id;
+
+        auto nRead = 0;
+        while (nRead < data.size())
+          nRead += read(data.data() + nRead, data.size() - nRead);
+        
+        response->pong.device_id = data[2];
       });
   }
 
