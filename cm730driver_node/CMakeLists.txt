@@ -26,6 +26,10 @@ target_include_directories(cm730driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
+ament_target_dependencies(cm730driver
+  "rclcpp"
+  "cm730driver_msgs")
+
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
 target_compile_definitions(cm730driver PRIVATE "CM730DRIVER_BUILDING_LIBRARY")

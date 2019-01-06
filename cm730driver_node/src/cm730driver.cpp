@@ -4,6 +4,7 @@ namespace cm730driver
 {
 
 Cm730Driver::Cm730Driver()
+  : rclcpp::Node{"cm730driver"}
 {
 }
 

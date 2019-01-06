@@ -1,10 +1,13 @@
-#include <cstdio>
+#include "cm730driver/cm730driver.hpp"
 
 int main(int argc, char ** argv)
 {
-  (void) argc;
-  (void) argv;
+  rclcpp::init(argc, argv);
 
-  printf("hello world cm730driver package\n");
+  auto node = std::make_shared<cm730driver::Cm730Driver>();
+  rclcpp::spin(node);
+  rclcpp::shutdown();
+  node = nullptr;
+  
   return 0;
 }
