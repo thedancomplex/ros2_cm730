@@ -9,6 +9,8 @@
 
 #include <numeric>
 
+using namespace std::literals::chrono_literals;
+
 namespace cm730driver
 {
   
@@ -34,10 +36,19 @@ namespace cm730driver
         auto sum = std::accumulate(std::next(data.begin(), 2), std::prev(data.end(), 1), 0u);
         data[5] = ~sum;
         write(data.data(), data.size());
+        RCLCPP_INFO(get_logger(), "Wrote ping");
 
+        auto readStartTime = now();
         auto nRead = 0;
         while (nRead < data.size())
         {
+          auto readingTime = now() - readStartTime;
+          if (readingTime.nanoseconds() > 12e6)
+          {
+            data[2] = 255;
+            break;
+          }
+          
           auto n = read(data.data() + nRead, data.size() - nRead);
           if (n > 0)
           {
@@ -48,6 +59,7 @@ namespace cm730driver
               str << int{data[i]} << " ";
             RCLCPP_INFO(get_logger(), str.str());
           }
+          rclcpp::sleep_for(100us);
         }
         
         response->pong.device_id = data[2];
