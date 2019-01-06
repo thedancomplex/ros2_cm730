@@ -20,8 +20,15 @@ find_package(ament_cmake REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
+set(msg_files
+  "msg/Ping.msg")
+
+set(srv_files
+  "srv/Ping.srv")
+
 rosidl_generate_interfaces(cm730driver_msgs
-  "msg/Ping.msg"
+  ${msg_files}
+  ${srv_files}
   DEPENDENCIES builtin_interfaces
 )
 

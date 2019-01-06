@@ -3,6 +3,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include "cm730driver/visibility_control.h"
+#include "cm730driver_msgs/srv/ping.hpp"
+
 
 namespace cm730driver
 {
@@ -13,6 +15,9 @@ namespace cm730driver
     Cm730Driver();
     
     virtual ~Cm730Driver();
+
+  private:
+    rclcpp::Service<cm730driver_msgs::srv::Ping>::SharedPtr mPingServer;
   };
   
 }  // namespace cm730driver
