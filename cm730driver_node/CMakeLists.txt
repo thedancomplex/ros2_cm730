@@ -21,7 +21,10 @@ find_package(ament_cmake_ros REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(cm730driver_msgs REQUIRED)
 
-add_library(cm730driver src/cm730driver.cpp)
+add_library(cm730driver
+  src/cm730driver.cpp
+  src/cm730device.cpp)
+
 target_include_directories(cm730driver PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)

@@ -9,6 +9,8 @@
 namespace cm730driver
 {
 
+  class Cm730Device;
+  
   class Cm730Driver : public rclcpp::Node
   {
   public:
@@ -17,15 +19,7 @@ namespace cm730driver
     virtual ~Cm730Driver();
 
   private:
-    void open();
-    void close();
-
-    void clear();
-    
-    int write(uint8_t const* outPacket, size_t size);
-    int read(uint8_t* inPacket, size_t size);
-    
-    int mDevice;
+    std::shared_ptr<Cm730Device> mDevice;
     
     rclcpp::Service<cm730driver_msgs::srv::Ping>::SharedPtr mPingServer;
   };
