@@ -1,6 +1,7 @@
 #include "cm730driver/cm730driver.hpp"
 
 #include "cm730driver/cm730device.hpp"
+#include "cm730driver/pingservice.hpp"
 
 #include <numeric>
 
@@ -14,7 +15,10 @@ namespace cm730driver
   {
     mDevice = std::make_shared<Cm730Device>("/dev/ttyUSB0");
     mDevice->open();
-    
+
+    mPingServer = PingService::create(*this, "ping", mDevice, get_clock());
+
+    /*
     mPingServer = create_service<cm730driver_msgs::srv::Ping>(
       "ping",
       [this](std::shared_ptr<cm730driver_msgs::srv::Ping::Request> request,
@@ -62,6 +66,7 @@ namespace cm730driver
         
         response->pong.success = true;
       });
+    */
   }
 
   Cm730Driver::~Cm730Driver()

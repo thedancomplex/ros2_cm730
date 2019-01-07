@@ -13,7 +13,8 @@
 using namespace cm730driver;
 
 Cm730Device::Cm730Device(std::string path)
-  : mPath{std::move(path)}
+  : mPath{std::move(path)},
+    mDevice{-1}
 {
 }
 

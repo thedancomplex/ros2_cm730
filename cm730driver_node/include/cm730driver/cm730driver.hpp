@@ -10,6 +10,7 @@ namespace cm730driver
 {
 
   class Cm730Device;
+  class PingService;
   
   class Cm730Driver : public rclcpp::Node
   {
@@ -20,8 +21,9 @@ namespace cm730driver
 
   private:
     std::shared_ptr<Cm730Device> mDevice;
-    
-    rclcpp::Service<cm730driver_msgs::srv::Ping>::SharedPtr mPingServer;
+
+    std::tuple<std::shared_ptr<PingService>,
+               rclcpp::Service<cm730driver_msgs::srv::Ping>::SharedPtr> mPingServer;
   };
   
 }  // namespace cm730driver
