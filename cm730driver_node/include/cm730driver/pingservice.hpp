@@ -22,7 +22,7 @@ namespace cm730driver
     
     uint8_t getDeviceId(const cm730driver_msgs::srv::Ping::Request& request) override
     {
-      return request.ping.device_id;
+      return request.device_id;
     }
     
     void setDataParameters(const cm730driver_msgs::srv::Ping::Request& request, Packet& packet) override {}
@@ -31,7 +31,7 @@ namespace cm730driver
                       cm730driver_msgs::srv::Ping::Response::SharedPtr response,
                       bool timedOut) override
     {
-      response->pong.success = !timedOut;
+      response->success = !timedOut;
     }
   };
   
