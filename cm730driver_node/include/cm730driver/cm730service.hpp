@@ -118,6 +118,14 @@ namespace cm730driver
     std::shared_ptr<typename ServiceT::Request> request,
     std::shared_ptr<typename ServiceT::Response> response)
   {
+    {
+      auto str = std::ostringstream{};
+      str
+        << "Received request: "
+        << rosidl_generator_traits::data_type<typename ServiceT::Request>();
+      RCLCPP_INFO(rclcpp::get_logger("cm730service"), str.str());
+    }
+    
     // Flush any unread bytes
     mDevice->clear();
 
@@ -126,11 +134,13 @@ namespace cm730driver
     setDataParameters(*request, txPacket);
     setChecksum(txPacket);
 
-    auto str = std::ostringstream{};
-    str << "Writing: ";
-    for (auto i = 0; i < txPacket.size(); ++i)
-      str << int{txPacket[i]} << " ";
-    RCLCPP_INFO(rclcpp::get_logger("cm730service"), str.str());
+    {
+      auto str = std::ostringstream{};
+      str << "Writing: ";
+      for (auto i = 0; i < txPacket.size(); ++i)
+        str << int{txPacket[i]} << " ";
+      RCLCPP_INFO(rclcpp::get_logger("cm730service"), str.str());
+    }
     
     // Send packet
     mDevice->write(txPacket.data(), txPacket.size());
@@ -161,11 +171,13 @@ namespace cm730driver
 
         // Log what we've read so far
         // TODO: use debug level
-        auto str = std::ostringstream{};
-        str << "Total read: " << nRead << " - ";
-        for (auto i = 0; i < nRead; ++i)
-          str << int{rxPacket[i]} << " ";
-        RCLCPP_INFO(rclcpp::get_logger("cm730service"), str.str());
+        {
+          auto str = std::ostringstream{};
+          str << "Total read: " << nRead << " - ";
+          for (auto i = 0; i < nRead; ++i)
+            str << int{rxPacket[i]} << " ";
+          RCLCPP_INFO(rclcpp::get_logger("cm730service"), str.str());
+        }
       }
       
       rclcpp::sleep_for(std::chrono::microseconds{100});
