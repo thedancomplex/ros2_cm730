@@ -125,6 +125,12 @@ namespace cm730driver
     setDataParameters(*request, txPacket);
     setChecksum(txPacket);
 
+    auto str = std::ostringstream{};
+    str << "Writing: ";
+    for (auto i = 0; i < txPacket.size(); ++i)
+      str << int{txPacket[i]} << " ";
+    RCLCPP_INFO(rclcpp::get_logger("cm730service"), str.str());
+    
     // Send packet
     mDevice->write(txPacket.data(), txPacket.size());
 
