@@ -26,7 +26,7 @@ namespace cm730driver
   class Cm730Service
   {
   public:
-    static constexpr uint8_t TX_HEADER_SIZE = 5;
+    static constexpr uint8_t HEADER_SIZE = 5;
     static constexpr uint8_t CHECKSUM_SIZE = 1;
     
     /// Indexes to parts in CM730 packets
@@ -34,7 +34,8 @@ namespace cm730driver
       ADDR_ID = 2,
       ADDR_LENGTH = 3,
       ADDR_INSTRUCTION = 4,
-      ADDR_PARAMETER = 5
+      ADDR_PARAMETER = 5,  // For TX packet
+      ADDR_ERROR = 5       // For RX packet
     };
 
     Cm730Service(std::shared_ptr<Cm730Device> device, std::shared_ptr<rclcpp::Clock> clock);

@@ -13,24 +13,34 @@ namespace cm730driver
   {
   public:
     using Base = Cm730Service<PING_INSTR, cm730driver_msgs::srv::Ping, PingService>;
-
+    using Ping = cm730driver_msgs::srv::Ping;
+    
     using Base::Base;
 
-    size_t txPacketSize() override { return TX_HEADER_SIZE + CHECKSUM_SIZE; }
+    size_t txPacketSize() override {
+      return HEADER_SIZE + CHECKSUM_SIZE;
+    }
     
-    size_t rxPacketSize(const cm730driver_msgs::srv::Ping::Request& request) override { return 6; }
+    size_t rxPacketSize(const Ping::Request& request) override {
+      (void)request;
+      return HEADER_SIZE + CHECKSUM_SIZE;
+    }
     
-    uint8_t getDeviceId(const cm730driver_msgs::srv::Ping::Request& request) override
+    uint8_t getDeviceId(const Ping::Request& request) override
     {
       return request.device_id;
     }
     
-    void setDataParameters(const cm730driver_msgs::srv::Ping::Request& request, Packet& packet) override {}
+    void setDataParameters(const Ping::Request& request, Packet& packet) override {
+      (void)request;
+      (void)packet;
+    }
     
     void handlePacket(Packet const& packet,
                       cm730driver_msgs::srv::Ping::Response::SharedPtr response,
                       bool timedOut) override
     {
+      (void)packet;
       response->success = !timedOut;
     }
   };

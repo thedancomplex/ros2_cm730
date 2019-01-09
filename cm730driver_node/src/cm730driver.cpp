@@ -2,6 +2,7 @@
 
 #include "cm730driver/cm730device.hpp"
 #include "cm730driver/pingservice.hpp"
+#include "cm730driver/readservice.hpp"
 
 #include <numeric>
 
@@ -17,6 +18,7 @@ namespace cm730driver
     mDevice->open();
 
     mPingServer = PingService::create(*this, "ping", mDevice, get_clock());
+    mReadServer = ReadService::create(*this, "read", mDevice, get_clock());
 
     /*
     mPingServer = create_service<cm730driver_msgs::srv::Ping>(
