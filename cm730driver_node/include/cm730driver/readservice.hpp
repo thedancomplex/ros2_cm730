@@ -41,7 +41,7 @@ namespace cm730driver
     {
       response->success = !timedOut;
       if (response->success)
-        std::copy(packet.begin(), packet.end(),
+        std::copy(std::next(packet.begin(), HEADER_SIZE), std::prev(packet.end(), CHECKSUM_SIZE),
                   std::back_inserter(response->data));
     }
   };
