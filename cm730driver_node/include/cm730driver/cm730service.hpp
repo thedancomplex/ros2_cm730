@@ -26,6 +26,9 @@ namespace cm730driver
   class Cm730Service
   {
   public:
+    static constexpr uint8_t TX_HEADER_SIZE = 5;
+    static constexpr uint8_t CHECKSUM_SIZE = 1;
+    
     /// Indexes to parts in CM730 packets
     enum  PacketAddr : uint8_t {
       ADDR_ID = 2,
