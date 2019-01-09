@@ -18,7 +18,7 @@ namespace cm730driver
     using Base::Base;
 
     size_t txPacketSize() override {
-      return HEADER_SIZE + CHECKSUM_SIZE;
+      return HEADER_SIZE + 2 + CHECKSUM_SIZE;
     }
     
     size_t rxPacketSize(const Read::Request& request) override {
