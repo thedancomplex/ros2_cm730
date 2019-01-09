@@ -18,7 +18,7 @@ namespace cm730driver
 
     size_t txPacketSize() override { return TX_HEADER_SIZE + CHECKSUM_SIZE; }
     
-    size_t rxPacketSize() override { return 6; }
+    size_t rxPacketSize(const cm730driver_msgs::srv::Ping::Request& request) override { return 6; }
     
     uint8_t getDeviceId(const cm730driver_msgs::srv::Ping::Request& request) override
     {

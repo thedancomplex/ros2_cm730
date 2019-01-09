@@ -55,7 +55,7 @@ namespace cm730driver
      *
      * Must include header and checksum
      */
-    virtual size_t rxPacketSize() = 0;
+    virtual size_t rxPacketSize(const typename ServiceT::Request& request) = 0;
 
     /** Device ID for packet
      *
@@ -129,7 +129,7 @@ namespace cm730driver
     mDevice->write(txPacket.data(), txPacket.size());
 
     // Prepare for reading response
-    auto rxPacket = Packet(rxPacketSize());
+    auto rxPacket = Packet(rxPacketSize(*request));
     
     auto readStartTime = mClock->now();
     auto nRead = 0u;
