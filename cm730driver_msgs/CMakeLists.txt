@@ -22,7 +22,8 @@ find_package(rosidl_default_generators REQUIRED)
 
 set(srv_files
   "srv/Ping.srv"
-  "srv/Read.srv")
+  "srv/Read.srv"
+  "srv/Write.srv")
 
 rosidl_generate_interfaces(cm730driver_msgs
   ${msg_files}

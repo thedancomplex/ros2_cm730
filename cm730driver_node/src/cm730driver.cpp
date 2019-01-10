@@ -3,6 +3,7 @@
 #include "cm730driver/cm730device.hpp"
 #include "cm730driver/pingservice.hpp"
 #include "cm730driver/readservice.hpp"
+#include "cm730driver/writeservice.hpp"
 
 #include <numeric>
 
@@ -19,56 +20,7 @@ namespace cm730driver
 
     mPingServer = PingService::create(*this, "ping", mDevice, get_clock());
     mReadServer = ReadService::create(*this, "read", mDevice, get_clock());
-
-    /*
-    mPingServer = create_service<cm730driver_msgs::srv::Ping>(
-      "ping",
-      [this](std::shared_ptr<cm730driver_msgs::srv::Ping::Request> request,
-         std::shared_ptr<cm730driver_msgs::srv::Ping::Response> response)
-      {
-        mDevice->clear();
-        
-        auto data = std::array<uint8_t, 6>{
-          0xFF, 0xFF,  // prefix
-          request->ping.device_id,  // device ID
-          2,  // length
-          1,  // instruction
-          0,  // checksum
-        };
-
-        auto sum = std::accumulate(std::next(data.begin(), 2), std::prev(data.end(), 1), 0u);
-        data[5] = ~sum;
-        mDevice->write(data.data(), data.size());
-        RCLCPP_INFO(get_logger(), "Wrote ping");
-
-        auto readStartTime = now();
-        auto nRead = 0;
-        while (nRead < data.size())
-        {
-          auto readingTime = now() - readStartTime;
-          if (readingTime.nanoseconds() / 1e6 > 12)
-          {
-            RCLCPP_INFO(get_logger(), "Timed out");
-            response->pong.success = false;
-            return;
-          }
-          
-          auto n = mDevice->read(data.data() + nRead, data.size() - nRead);
-          if (n > 0)
-          {
-            nRead += n;
-            auto str = std::ostringstream{};
-            str << "Total read: " << nRead << " - ";
-            for (auto i = 0; i < nRead; ++i)
-              str << int{data[i]} << " ";
-            RCLCPP_INFO(get_logger(), str.str());
-          }
-          rclcpp::sleep_for(100us);
-        }
-        
-        response->pong.success = true;
-      });
-    */
+    mWriteServer = WriteService::create(*this, "write", mDevice, get_clock());
   }
 
   Cm730Driver::~Cm730Driver()

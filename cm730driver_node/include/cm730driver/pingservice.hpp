@@ -17,7 +17,8 @@ namespace cm730driver
     
     using Base::Base;
 
-    size_t txPacketSize() override {
+    size_t txPacketSize(const Ping::Request& request) override {
+      (void)request;
       return HEADER_SIZE + CHECKSUM_SIZE;
     }
     

@@ -50,7 +50,7 @@ namespace cm730driver
      *
      * Must include header and checksum
      */
-    virtual size_t txPacketSize() = 0;
+    virtual size_t txPacketSize(const typename ServiceT::Request& request) = 0;
 
     /** Size of packets received from CM730
      *
@@ -130,7 +130,7 @@ namespace cm730driver
     mDevice->clear();
 
     // Prepare packet to send
-    auto txPacket = initPacket(txPacketSize(), getDeviceId(*request));
+    auto txPacket = initPacket(txPacketSize(*request), getDeviceId(*request));
     setDataParameters(*request, txPacket);
     setChecksum(txPacket);
 
