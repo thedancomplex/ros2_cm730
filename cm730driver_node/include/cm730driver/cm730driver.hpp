@@ -6,6 +6,7 @@
 #include "cm730driver_msgs/srv/ping.hpp"
 #include "cm730driver_msgs/srv/read.hpp"
 #include "cm730driver_msgs/srv/write.hpp"
+#include "cm730driver_msgs/srv/bulk_read.hpp"
 
 
 namespace cm730driver
@@ -15,6 +16,7 @@ namespace cm730driver
   class PingService;
   class ReadService;
   class WriteService;
+  class BulkReadService;
   
   class Cm730Driver : public rclcpp::Node
   {
@@ -34,6 +36,9 @@ namespace cm730driver
 
     std::tuple<std::shared_ptr<WriteService>,
                rclcpp::Service<cm730driver_msgs::srv::Write>::SharedPtr> mWriteServer;
+
+    std::tuple<std::shared_ptr<BulkReadService>,
+               rclcpp::Service<cm730driver_msgs::srv::BulkRead>::SharedPtr> mBulkReadServer;
   };
   
 }  // namespace cm730driver

@@ -20,10 +20,14 @@ find_package(ament_cmake REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
+set(msg_files
+  "msg/RangeReadRequest.msg")
+
 set(srv_files
   "srv/Ping.srv"
   "srv/Read.srv"
-  "srv/Write.srv")
+  "srv/Write.srv"
+  "srv/BulkRead.srv")
 
 rosidl_generate_interfaces(cm730driver_msgs
   ${msg_files}

@@ -1,0 +1,6 @@
+# ID of the device orchestrating the bulk request
+uint8 device_id
+# Requests for all separate devices (including the orchestrating device if needed)
+RangeReadRequest[] devices
+---
+bool success
