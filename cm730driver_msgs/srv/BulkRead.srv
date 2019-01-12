@@ -1,6 +1,9 @@
 # ID of the device orchestrating the bulk request
 uint8 device_id
 # Requests for all separate devices (including the orchestrating device if needed)
-RangeReadRequest[] devices
+# TODO: At the moment you can't nest objects in CLI service calls (https://github.com/ros2/ros2cli/issues/59).
+# For now we just use a plain bytes array, which should have length multiple of 3
+# RangeReadRequest[] devices
+uint8[] read_requests
 ---
 bool success

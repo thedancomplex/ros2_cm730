@@ -2,7 +2,7 @@
 #define CM730DRIVER__BULKREADSERVICE_HPP_
 
 #include "cm730driver/cm730service.hpp"
-#include "cm730driver_msgs/srv/read.hpp"
+#include "cm730driver_msgs/srv/bulk_read.hpp"
 
 #define BULK_READ_INSTR 146
 
@@ -19,7 +19,7 @@ namespace cm730driver
 
     size_t txPacketSize(const BulkRead::Request& request) override {
       (void)request;
-      return HEADER_SIZE + 1 + 3 * request.devices.size() + CHECKSUM_SIZE;
+      return HEADER_SIZE + 1 + 3 * request.read_requests.size() / 3 + CHECKSUM_SIZE;
     }
     
     size_t rxPacketSize(const BulkRead::Request& request) override {
@@ -34,10 +34,11 @@ namespace cm730driver
     void setDataParameters(const BulkRead::Request& request, Packet& packet) override {
       packet[ADDR_PARAMETER] = 0;
       auto cursor = ADDR_PARAMETER + 1;
-      for (auto const& device : request.devices) {
-        packet[cursor++] = device.length;
-        packet[cursor++] = device.device_id;
-        packet[cursor++] = device.address;
+      for (auto iter = request.read_requests.begin(); iter != request.read_requests.end();
+           std::advance(iter, 3)) {
+        packet[cursor++] = *std::next(iter, 0);
+        packet[cursor++] = *std::next(iter, 1);
+        packet[cursor++] = *std::next(iter, 2);
       }
     }
     
