@@ -32,7 +32,7 @@ namespace cm730driver
     
     uint8_t getDeviceId(const BulkRead::Request& request) override
     {
-      return request.device_id;
+      return 254;
     }
     
     void setDataParameters(const BulkRead::Request& request, Packet& packet) override {
