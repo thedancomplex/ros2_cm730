@@ -21,7 +21,8 @@ find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 set(msg_files
-  "msg/RangeReadRequest.msg")
+  "msg/RangeReadRequest.msg"
+  "msg/RangeReadResult.msg")
 
 set(srv_files
   "srv/Ping.srv"

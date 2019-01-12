@@ -37,13 +37,15 @@ namespace cm730driver
     }
     
     void handlePacket(Packet const& packet,
-                      Read::Response::SharedPtr response,
+                      Read::Request const& request,
+                      Read::Response& response,
                       bool timedOut) override
     {
-      response->success = !timedOut;
-      if (response->success)
+      (void)request;
+      response.success = !timedOut;
+      if (response.success)
         std::copy(std::next(packet.begin(), HEADER_SIZE), std::prev(packet.end(), CHECKSUM_SIZE),
-                  std::back_inserter(response->data));
+                  std::back_inserter(response.data));
     }
   };
   

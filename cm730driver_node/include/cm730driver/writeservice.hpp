@@ -38,10 +38,13 @@ namespace cm730driver
     }
     
     void handlePacket(Packet const& packet,
-                      Write::Response::SharedPtr response,
+                      Write::Request const& request,
+                      Write::Response& response,
                       bool timedOut) override
     {
-      response->success = !timedOut;
+      (void)packet;
+      (void)request;
+      response.success = !timedOut;
     }
   };
   

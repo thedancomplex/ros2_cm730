@@ -23,7 +23,11 @@ namespace cm730driver
     }
     
     size_t rxPacketSize(const BulkRead::Request& request) override {
-      return HEADER_SIZE + 1 + CHECKSUM_SIZE;
+      auto total_request_length = 0;
+      for (auto iter = request.read_requests.begin(); iter != request.read_requests.end();
+           std::advance(iter, 3))
+        total_request_length += *iter;
+      return HEADER_SIZE + total_request_length + CHECKSUM_SIZE;
     }
     
     uint8_t getDeviceId(const BulkRead::Request& request) override
@@ -43,10 +47,28 @@ namespace cm730driver
     }
     
     void handlePacket(Packet const& packet,
-                      BulkRead::Response::SharedPtr response,
+                      BulkRead::Request const& request,
+                      BulkRead::Response& response,
                       bool timedOut) override
     {
-      response->success = !timedOut;
+      response.success = !timedOut;
+      if (response.success) {
+        auto dataCursor = std::next(packet.begin(), HEADER_SIZE);
+        // Go through each requested device
+        for (auto iter = request.read_requests.begin(); iter != request.read_requests.end();
+             std::advance(iter, 3)) {
+          auto result = cm730driver_msgs::msg::RangeReadResult{};
+          // Get device and how much was meant to read from original request
+          result.device_id = *std::next(iter, 1);
+          auto resultLength = *std::next(iter, 0);
+          // Copy data into result
+          std::copy(dataCursor, std::next(dataCursor, resultLength),
+                    std::back_inserter(result.data));
+          response.results.push_back(result);
+          // Advance location in received packet
+          std::advance(dataCursor, resultLength);
+        }
+      }
     }
   };
   

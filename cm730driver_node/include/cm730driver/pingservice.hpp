@@ -38,11 +38,13 @@ namespace cm730driver
     }
     
     void handlePacket(Packet const& packet,
-                      cm730driver_msgs::srv::Ping::Response::SharedPtr response,
+                      Ping::Request const& request,
+                      Ping::Response& response,
                       bool timedOut) override
     {
       (void)packet;
-      response->success = !timedOut;
+      (void)request;
+      response.success = !timedOut;
     }
   };
   

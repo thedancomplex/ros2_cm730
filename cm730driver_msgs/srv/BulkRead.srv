@@ -7,3 +7,4 @@ uint8 device_id
 uint8[] read_requests
 ---
 bool success
+RangeReadResult[] results

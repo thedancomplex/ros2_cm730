@@ -72,7 +72,8 @@ namespace cm730driver
     virtual void setDataParameters(const typename ServiceT::Request& request, Packet& packet) = 0;
 
     virtual void handlePacket(Packet const& packet,
-                              std::shared_ptr<typename ServiceT::Response> response,
+                              const typename ServiceT::Request& request,
+                              typename ServiceT::Response& response,
                               bool timedOut) = 0;
 
     static std::tuple<std::shared_ptr<Derived>, typename rclcpp::Service<ServiceT>::SharedPtr>
@@ -157,7 +158,7 @@ namespace cm730driver
       if (readingTime.nanoseconds() / 1e6 > 12)
       {
         RCLCPP_INFO(rclcpp::get_logger("cm730service"), "Timed out");
-        handlePacket(rxPacket, response, true);
+        handlePacket(rxPacket, *request, *response, true);
         return;
       }
 
@@ -184,7 +185,7 @@ namespace cm730driver
     }
 
     // Successfully read full packet, create response
-    handlePacket(rxPacket, response, false);
+    handlePacket(rxPacket, *request, *response, false);
   }
   
   template<uint8_t INSTR, class ServiceT, class Derived>
