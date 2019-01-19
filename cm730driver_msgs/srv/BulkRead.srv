@@ -1,9 +1,8 @@
-# Requests for all separate devices (including the orchestrating device if needed)
+# Requests for all separate devices
 # TODO: At the moment you can't nest objects in CLI service calls
 # (https://github.com/ros2/ros2cli/issues/59).
 # For now we just use a plain bytes array, which should have length multiple of 3,
 # where each tuple has (length, device_id, address)
-# RangeReadRequest[] devices
 uint8[] read_requests
 ---
 bool success

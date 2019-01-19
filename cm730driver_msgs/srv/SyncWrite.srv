@@ -4,7 +4,7 @@ uint8 address
 # Bytes to write for each device
 uint8 length
 
-# Requests for all separate device (including the orchestrating device if needed)
+# Requests for all separate devices
 # TODO: at the moment you can't nest objects in CLI service calls
 # (https://github.com/ros2/ros2cli/issues/59).
 # For now we just use a plain bytes array, which should have total length n devices * (1 + length)
