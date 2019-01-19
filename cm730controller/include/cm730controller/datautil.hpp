@@ -14,8 +14,8 @@ namespace cm730controller {
       return data[uint8_t(addr)];
     }
 
-    static uint8_t getWord(std::vector<uint8_t> const& data, CM730Table addr) {
-      return data[uint8_t(addr)] | (data[uint8_t(addr) + 1] << 8);
+    static uint16_t getWord(std::vector<uint8_t> const& data, CM730Table addr) {
+      return uint16_t{data[uint8_t(addr)]} | (uint16_t{data[uint8_t(addr) + 1]} << 8);
     }
   };
 
