@@ -5,6 +5,7 @@
 #include "cm730driver/readservice.hpp"
 #include "cm730driver/writeservice.hpp"
 #include "cm730driver/bulkreadservice.hpp"
+#include "cm730driver/syncwriteservice.hpp"
 
 #include <numeric>
 
@@ -23,6 +24,7 @@ namespace cm730driver
     mReadServer = ReadService::create(*this, "read", mDevice, get_clock());
     mWriteServer = WriteService::create(*this, "write", mDevice, get_clock());
     mBulkReadServer = BulkReadService::create(*this, "bulkread", mDevice, get_clock());
+    mSyncWriteServer = SyncWriteService::create(*this, "syncwrite", mDevice, get_clock());
   }
 
   Cm730Driver::~Cm730Driver()
