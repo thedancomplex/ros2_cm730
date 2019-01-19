@@ -22,7 +22,7 @@ namespace cm730driver
 
     size_t rxPacketSize(const SyncWrite::Request& request) override {
       (void)request;
-      return 1;
+      return HEADER_SIZE + CHECKSUM_SIZE;
     }
 
     uint8_t getDeviceId(const SyncWrite::Request& request) override {
