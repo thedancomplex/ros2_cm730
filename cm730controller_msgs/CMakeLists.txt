@@ -16,8 +16,9 @@ find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/CM730EepromTable.msg"
+  "msg/CM730RamTable.msg"
   "msg/CM730Info.msg"
-  "msg/CM730Snapshot.msg"
   DEPENDENCIES builtin_interfaces
 )
 

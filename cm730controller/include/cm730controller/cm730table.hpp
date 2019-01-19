@@ -21,10 +21,10 @@ namespace cm730controller
     EEPROM_LENGTH     = 17,
     DXL_POWER         = 24, /// Dynamixel Power
     LED_PANEL         = 25, /// LED of back panel
-    LED_HEAD_L        = 26, /// Low byte of Head LED
-    LED_HEAD_H        = 27, /// High byte of Head LED
-    LED_EYE_L         = 28, /// Low byte of Eye LED
-    LED_EYE_H         = 29, /// High byte of Eye LED
+    LED_5_L           = 26, /// Low byte of Head LED
+    LED_5_H           = 27, /// High byte of Head LED
+    LED_6_L           = 28, /// Low byte of Eye LED
+    LED_6_H           = 29, /// High byte of Eye LED
     BUTTON            = 30, /// Button
     GYRO_Z_L          = 38, /// Low byte of Gyro Z-axis
     GYRO_Z_H          = 39, /// High byte of Gyro Z-axis

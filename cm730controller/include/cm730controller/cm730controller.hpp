@@ -20,12 +20,19 @@ namespace cm730controller
   private:
     using BulkRead = cm730driver_msgs::srv::BulkRead;
     using CM730Info = cm730controller_msgs::msg::CM730Info;
+    using CM730EepromTable = cm730controller_msgs::msg::CM730EepromTable;
     
     using BulkReadClient = rclcpp::Client<BulkRead>;
     
     rclcpp::Client<BulkRead>::SharedPtr bulkReadClient_;
     rclcpp::TimerBase::SharedPtr loopTimer_;
     std::shared_ptr<rclcpp::Publisher<CM730Info>> cm730InfoPub_;
+
+    CM730EepromTable::SharedPtr staticCm730Info_;
+    
+    void handleStaticCm730Info(BulkReadClient::SharedFuture response);
+    void handleDynamicCm730Info(BulkReadClient::SharedFuture response);
+    void startLoop();
   };
   
 }  // namespace cm730controller
