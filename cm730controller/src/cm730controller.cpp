@@ -1,4 +1,5 @@
 #include "cm730controller/cm730controller.hpp"
+#include "cm730controller/cm730table.hpp"
 
 using namespace std::chrono_literals;
 
@@ -9,15 +10,18 @@ namespace cm730controller
     : rclcpp::Node{"cm730controller"}
   {
     bulkReadClient_ = create_client<cm730driver_msgs::srv::BulkRead>("bulkread");
+
+    // Prepare bulk read request messages for reading static information,
+    // and for reading dynamic information
+    auto staticBulkReadRequest = std::make_shared<BulkRead::Request>();
+    staticBulkReadRequest->read_requests = {
+      uint8_t(CM730Table::EEPROM_LENGTH), 200, 0  // CM730 EEPROM data
+    };
+
     auto loop =
-      [this]() -> void {
-        auto bulkReadRequest = std::make_shared<BulkRead::Request>();
-        bulkReadRequest->read_requests = {
-          17, 200, 0  // First 17 bytes of CM730 control register
-        };
-        
+      [=]() -> void {        
         bulkReadClient_->async_send_request(
-          bulkReadRequest,
+          staticBulkReadRequest,
           [this](BulkReadClient::SharedFuture response) {
             RCLCPP_INFO(get_logger(), "Number of results in response: " + std::to_string(response.get()->results.size()));
           });
