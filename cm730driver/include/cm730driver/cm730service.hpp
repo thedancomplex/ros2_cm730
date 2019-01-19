@@ -124,7 +124,7 @@ namespace cm730driver
       str
         << "Received request: "
         << rosidl_generator_traits::data_type<typename ServiceT::Request>();
-      RCLCPP_INFO(rclcpp::get_logger("cm730service"), str.str());
+      RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
     }
     
     // Flush any unread bytes
@@ -140,7 +140,7 @@ namespace cm730driver
       str << "Writing: ";
       for (auto i = 0; i < txPacket.size(); ++i)
         str << int{txPacket[i]} << " ";
-      RCLCPP_INFO(rclcpp::get_logger("cm730service"), str.str());
+      RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
     }
     
     // Send packet
@@ -157,7 +157,7 @@ namespace cm730driver
       auto readingTime = mClock->now() - readStartTime;
       if (readingTime.nanoseconds() / 1e6 > 12)
       {
-        RCLCPP_INFO(rclcpp::get_logger("cm730service"), "Timed out");
+        RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), "Timed out");
         handlePacket(rxPacket, *request, *response, true);
         return;
       }
@@ -177,7 +177,7 @@ namespace cm730driver
           str << "Total read: " << nRead << " - ";
           for (auto i = 0; i < nRead; ++i)
             str << int{rxPacket[i]} << " ";
-          RCLCPP_INFO(rclcpp::get_logger("cm730service"), str.str());
+          RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
         }
       }
       
