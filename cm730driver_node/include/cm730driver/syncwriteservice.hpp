@@ -26,7 +26,8 @@ namespace cm730driver
     }
 
     uint8_t getDeviceId(const SyncWrite::Request& request) override {
-      return request.device_id;
+      (void)request;
+      return 254;
     }
 
     void setDataParameters(const SyncWrite::Request& request, Packet& packet) override {
