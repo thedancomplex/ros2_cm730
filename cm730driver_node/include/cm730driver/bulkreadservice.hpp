@@ -18,7 +18,6 @@ namespace cm730driver
     using Base::Base;
 
     size_t txPacketSize(const BulkRead::Request& request) override {
-      (void)request;
       return HEADER_SIZE + 1 + 3 * request.read_requests.size() / 3 + CHECKSUM_SIZE;
     }
     
@@ -32,6 +31,7 @@ namespace cm730driver
     
     uint8_t getDeviceId(const BulkRead::Request& request) override
     {
+      (void)request;
       return 254;
     }
     
