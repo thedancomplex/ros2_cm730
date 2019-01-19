@@ -22,13 +22,15 @@ find_package(rosidl_default_generators REQUIRED)
 
 set(msg_files
   "msg/RangeReadRequest.msg"
-  "msg/RangeReadResult.msg")
+  "msg/RangeReadResult.msg"
+  "msg/RangeWriteRequest.msg")
 
 set(srv_files
   "srv/Ping.srv"
   "srv/Read.srv"
   "srv/Write.srv"
-  "srv/BulkRead.srv")
+  "srv/BulkRead.srv"
+  "srv/SyncWrite.srv")
 
 rosidl_generate_interfaces(cm730driver_msgs
   ${msg_files}
