@@ -20,6 +20,7 @@ find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(cm730driver_msgs REQUIRED)
+find_package(cm730controller_msgs REQUIRED)
 
 add_library(cm730controller
   src/cm730controller.cpp)
@@ -30,7 +31,8 @@ target_include_directories(cm730controller PUBLIC
 
 ament_target_dependencies(cm730controller
   "rclcpp"
-  "cm730driver_msgs")
+  "cm730driver_msgs"
+  "cm730controller_msgs")
 
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.

@@ -1,5 +1,6 @@
 #include "cm730controller/cm730controller.hpp"
 #include "cm730controller/cm730table.hpp"
+#include "cm730controller/datautil.hpp"
 
 using namespace std::chrono_literals;
 
@@ -9,8 +10,9 @@ namespace cm730controller
   Cm730Controller::Cm730Controller()
     : rclcpp::Node{"cm730controller"}
   {
-    bulkReadClient_ = create_client<cm730driver_msgs::srv::BulkRead>("bulkread");
-
+    bulkReadClient_ = create_client<BulkRead>("bulkread");
+    cm730InfoPub_ = create_publisher<CM730Info>("cm730info");
+    
     // Prepare bulk read request messages for reading static information,
     // and for reading dynamic information
     auto staticBulkReadRequest = std::make_shared<BulkRead::Request>();
@@ -23,7 +25,17 @@ namespace cm730controller
         bulkReadClient_->async_send_request(
           staticBulkReadRequest,
           [this](BulkReadClient::SharedFuture response) {
-            RCLCPP_INFO(get_logger(), "Number of results in response: " + std::to_string(response.get()->results.size()));
+            auto cm730Result = response.get()->results[0];
+            auto info = std::make_shared<CM730Info>();
+
+            info->model_number = DataUtil::getWord(cm730Result.data, CM730Table::MODEL_NUMBER_L);
+            info->version = DataUtil::getByte(cm730Result.data, CM730Table::VERSION);
+            info->id = DataUtil::getByte(cm730Result.data, CM730Table::ID);
+            info->baud_rate = DataUtil::getByte(cm730Result.data, CM730Table::BAUD_RATE);
+            info->return_delay_time = DataUtil::getByte(cm730Result.data, CM730Table::RETURN_DELAY_TIME);
+            info->return_level = DataUtil::getByte(cm730Result.data, CM730Table::RETURN_LEVEL);
+
+            cm730InfoPub_->publish(info);
           });
       };
 
