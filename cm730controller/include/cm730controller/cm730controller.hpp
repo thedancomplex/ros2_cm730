@@ -5,6 +5,7 @@
 #include <cm730driver_msgs/srv/write.hpp>
 #include <cm730driver_msgs/srv/bulk_read.hpp>
 #include <cm730controller_msgs/msg/cm730_info.hpp>
+#include <cm730controller_msgs/msg/mx28_info.hpp>
 
 #include "cm730controller/visibility_control.h"
 
@@ -23,6 +24,7 @@ namespace cm730controller
     using BulkRead = cm730driver_msgs::srv::BulkRead;
     using CM730Info = cm730controller_msgs::msg::CM730Info;
     using CM730EepromTable = cm730controller_msgs::msg::CM730EepromTable;
+    using MX28EepromTable = cm730controller_msgs::msg::MX28EepromTable;
     
     using WriteClient = rclcpp::Client<Write>;
     using BulkReadClient = rclcpp::Client<BulkRead>;
@@ -35,12 +37,13 @@ namespace cm730controller
     std::shared_ptr<rclcpp::Publisher<CM730Info>> cm730InfoPub_;
 
     CM730EepromTable::SharedPtr staticCm730Info_;
-
+    std::map<uint8_t, MX28EepromTable::SharedPtr> staticMx28Info_;
+    
     void powerOn();
     void readStaticInfo();
     void handleStaticInfo(BulkReadClient::SharedFuture response);
-    void handleDynamicCm730Info(BulkReadClient::SharedFuture response);
     void startLoop();
+    void handleDynamicCm730Info(BulkReadClient::SharedFuture response);
   };
   
 }  // namespace cm730controller

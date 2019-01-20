@@ -93,6 +93,49 @@ namespace cm730controller
     staticCm730Info_->return_level =
       DataUtil::getByte(cm730Result.data, CM730Table::RETURN_LEVEL, CM730Table::MODEL_NUMBER_L);
 
+    staticMx28Info_.clear();
+    for (auto i = 1; i <= 20; ++i) {
+      auto mx28Result = results[i];
+      assert(mx28Result.device_id == i);
+      auto staticMx28Info = std::make_shared<MX28EepromTable>();
+
+      staticMx28Info->model_number =
+        DataUtil::getWord(mx28Result.data, MX28Table::MODEL_NUMBER_L, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->version =
+        DataUtil::getByte(mx28Result.data, MX28Table::VERSION, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->id =
+        DataUtil::getByte(mx28Result.data, MX28Table::ID, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->baud_rate =
+        DataUtil::getByte(mx28Result.data, MX28Table::BAUD_RATE, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->return_delay_time =
+        DataUtil::getByte(mx28Result.data, MX28Table::RETURN_DELAY_TIME, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->cw_angle_limit =
+        DataUtil::getWord(mx28Result.data, MX28Table::CW_ANGLE_LIMIT_L, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->ccw_angle_limit =
+        DataUtil::getWord(mx28Result.data, MX28Table::CCW_ANGLE_LIMIT_L, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->high_limit_temperature =
+        DataUtil::getByte(mx28Result.data, MX28Table::HIGH_LIMIT_TEMPERATURE, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->low_limit_voltage =
+        DataUtil::getByte(mx28Result.data, MX28Table::LOW_LIMIT_VOLTAGE, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->high_limit_voltage =
+        DataUtil::getByte(mx28Result.data, MX28Table::HIGH_LIMIT_VOLTAGE, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->max_torque =
+        DataUtil::getWord(mx28Result.data, MX28Table::MAX_TORQUE_L, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->return_level =
+        DataUtil::getByte(mx28Result.data, MX28Table::RETURN_LEVEL, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->alarm_led =
+        DataUtil::getByte(mx28Result.data, MX28Table::ALARM_LED, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->alarm_shutdown =
+        DataUtil::getByte(mx28Result.data, MX28Table::ALARM_SHUTDOWN, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->operating_mode =
+        DataUtil::getByte(mx28Result.data, MX28Table::OPERATING_MODE, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->low_calibration =
+        DataUtil::getWord(mx28Result.data, MX28Table::LOW_CALIBRATION_L, MX28Table::MODEL_NUMBER_L);
+      staticMx28Info->high_calibration =
+        DataUtil::getWord(mx28Result.data, MX28Table::HIGH_CALIBRATION_L, MX28Table::MODEL_NUMBER_L);
+        
+      staticMx28Info_[i] = staticMx28Info;
+    }
     startLoop();
   }
 
