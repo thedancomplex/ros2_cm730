@@ -22,6 +22,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MX28EepromTable.msg"
   "msg/MX28RamTable.msg"
   "msg/MX28Info.msg"
+  "msg/MX28InfoArray.msg"
   DEPENDENCIES builtin_interfaces
 )
 

@@ -1,17 +1,5 @@
-bool torque_enable
-bool led
-uint8 d_gain
-uint8 i_gain
-uint8 p_gain
-uint16 goal_position
-uint16 moving_speed
-uint16 torque_limit
 uint16 present_position
 uint16 present_speed
 uint16 present_load
 uint8 present_voltage
 uint8 present_temperature
-bool registered_instruction
-bool moving
-bool locked
-uint16 punch

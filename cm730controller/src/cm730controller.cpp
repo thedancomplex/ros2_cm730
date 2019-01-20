@@ -16,7 +16,8 @@ namespace cm730controller
     bulkReadClient_ = create_client<BulkRead>("bulkread");
     
     cm730InfoPub_ = create_publisher<CM730Info>("cm730info");
-
+    mx28InfoPub_ = create_publisher<MX28InfoArray>("mx28info");
+    
     while (!writeClient_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
         RCLCPP_ERROR(get_logger(), "Bulk read client interrupted while waiting for service to appear.");
@@ -159,13 +160,13 @@ namespace cm730controller
       [=]() -> void {        
         bulkReadClient_->async_send_request(
           dynamicBulkReadRequest,
-          [this](BulkReadClient::SharedFuture response) { handleDynamicCm730Info(response); });
+          [this](BulkReadClient::SharedFuture response) { handleDynamicInfo(response); });
       };
 
     loopTimer_ = create_wall_timer(8ms, loop);
   }
 
-  void Cm730Controller::handleDynamicCm730Info(BulkReadClient::SharedFuture response)
+  void Cm730Controller::handleDynamicInfo(BulkReadClient::SharedFuture response)
   {
     if (!response.get()->success) {
       RCLCPP_ERROR(get_logger(), "Bulk read failed!");
@@ -209,6 +210,27 @@ namespace cm730controller
     cm730Info->stat = *staticCm730Info_;
     cm730Info->dyna = *dynamicCm730Info;    
     cm730InfoPub_->publish(cm730Info);
+
+    auto mx28Infos = std::make_shared<MX28InfoArray>();
+    for (auto i = 1; i <= 20; ++i) {
+      auto mx28Result = response.get()->results[i];
+      auto dynamicMx28Info = std::make_shared<MX28RamTable>();
+
+      dynamicMx28Info->present_position =
+        DataUtil::getWord(mx28Result.data, MX28Table::PRESENT_POSITION_L, MX28Table::PRESENT_POSITION_L);
+      dynamicMx28Info->present_speed =
+        DataUtil::getWord(mx28Result.data, MX28Table::PRESENT_SPEED_L, MX28Table::PRESENT_POSITION_L);
+      dynamicMx28Info->present_voltage =
+        DataUtil::getByte(mx28Result.data, MX28Table::PRESENT_VOLTAGE, MX28Table::PRESENT_POSITION_L);
+      dynamicMx28Info->present_temperature =
+        DataUtil::getByte(mx28Result.data, MX28Table::PRESENT_TEMPERATURE, MX28Table::PRESENT_POSITION_L);
+      
+      auto mx28Info = std::make_shared<MX28Info>();
+      mx28Info->stat = *staticMx28Info_[mx28Result.device_id];
+      mx28Info->dyna = *dynamicMx28Info;
+      mx28Infos->mx28s.push_back(*mx28Info);
+    }
+    mx28InfoPub_->publish(mx28Infos);
   }
   
 }  // namespace cm730controller
