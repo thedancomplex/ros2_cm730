@@ -16,13 +16,21 @@ namespace cm730controller
     cm730InfoPub_ = create_publisher<CM730Info>("cm730info");
     
     // Prepare bulk read request messages for reading static information,
-    // and for reading dynamic information
     auto staticBulkReadRequest = std::make_shared<BulkRead::Request>();
     staticBulkReadRequest->read_requests = {
       uint8_t(CM730Table::EEPROM_LENGTH), 200, 0  // CM730 EEPROM data
     };
 
+    while (!bulkReadClient_->wait_for_service(1s)) {
+      if (!rclcpp::ok()) {
+        RCLCPP_ERROR(get_logger(), "Bulk read client interrupted while waiting for service to appear.");
+        return;
+      }
+      RCLCPP_INFO(get_logger(), "Waiting for CM730 driver to appear...");
+    }
+    
     // Request and wait for static info once
+    RCLCPP_INFO(get_logger(), "Reading static CM730 info...");
     bulkReadClient_->async_send_request(
       staticBulkReadRequest,
       [=](BulkReadClient::SharedFuture response) { handleStaticCm730Info(response); });
@@ -34,6 +42,7 @@ namespace cm730controller
 
   void Cm730Controller::handleStaticCm730Info(BulkReadClient::SharedFuture response)
   {
+    RCLCPP_INFO(get_logger(), "Received static CM730 info");
     auto cm730Result = response.get()->results[0];
     staticCm730Info_ = std::make_shared<CM730EepromTable>();
 
