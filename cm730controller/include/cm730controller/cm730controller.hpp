@@ -30,7 +30,7 @@ namespace cm730controller
 
     CM730EepromTable::SharedPtr staticCm730Info_;
     
-    void handleStaticCm730Info(BulkReadClient::SharedFuture response);
+    void handleStaticInfo(BulkReadClient::SharedFuture response);
     void handleDynamicCm730Info(BulkReadClient::SharedFuture response);
     void startLoop();
   };

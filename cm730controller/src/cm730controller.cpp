@@ -1,9 +1,9 @@
 #include "cm730controller/cm730controller.hpp"
 #include "cm730controller/cm730table.hpp"
+#include "cm730controller/mx28table.hpp"
 #include "cm730controller/datautil.hpp"
 
 using namespace std::chrono_literals;
-
 using namespace cm730controller_msgs::msg;
 
 namespace cm730controller
@@ -21,6 +21,12 @@ namespace cm730controller
       uint8_t(CM730Table::EEPROM_LENGTH), 200, 0  // CM730 EEPROM data
     };
 
+    for (auto i = 1; i <= 20; ++i) {
+      staticBulkReadRequest->read_requests.push_back(uint8_t(MX28Table::EEPROM_LENGTH));
+      staticBulkReadRequest->read_requests.push_back(i);
+      staticBulkReadRequest->read_requests.push_back(0);
+    }
+    
     while (!bulkReadClient_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
         RCLCPP_ERROR(get_logger(), "Bulk read client interrupted while waiting for service to appear.");
@@ -30,20 +36,23 @@ namespace cm730controller
     }
     
     // Request and wait for static info once
-    RCLCPP_INFO(get_logger(), "Reading static CM730 info...");
+    RCLCPP_INFO(get_logger(), "Reading static info...");
     bulkReadClient_->async_send_request(
       staticBulkReadRequest,
-      [=](BulkReadClient::SharedFuture response) { handleStaticCm730Info(response); });
+      [=](BulkReadClient::SharedFuture response) { handleStaticInfo(response); });
   }
   
   Cm730Controller::~Cm730Controller()
   {
   }
 
-  void Cm730Controller::handleStaticCm730Info(BulkReadClient::SharedFuture response)
+  void Cm730Controller::handleStaticInfo(BulkReadClient::SharedFuture response)
   {
-    RCLCPP_INFO(get_logger(), "Received static CM730 info");
-    auto cm730Result = response.get()->results[0];
+    auto const& results = response.get()->results;
+    RCLCPP_INFO(get_logger(), "Received static CM730 info; # of results: " + std::to_string(results.size()));
+
+    // CM730
+    auto cm730Result = results[0];
     staticCm730Info_ = std::make_shared<CM730EepromTable>();
 
     staticCm730Info_->model_number =
