@@ -147,6 +147,14 @@ namespace cm730controller
       cm730ReadLength, 200, uint8_t(CM730Table::DXL_POWER)  // CM730 EEPROM data
     };
 
+    auto mx28ReadLength = uint8_t{uint8_t(MX28Table::PUNCH_H) - uint8_t(MX28Table::TORQUE_ENABLE) + 1};
+    for (auto i = uint8_t{1}; i <= 20; ++i) {
+      dynamicBulkReadRequest->read_requests.insert(
+        dynamicBulkReadRequest->read_requests.end(), {
+          mx28ReadLength, i, uint8_t(MX28Table::TORQUE_ENABLE)
+        });
+    }
+
     auto loop =
       [=]() -> void {        
         bulkReadClient_->async_send_request(
