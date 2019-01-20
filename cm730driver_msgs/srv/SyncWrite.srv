@@ -10,4 +10,5 @@ uint8 length
 # For now we just use a plain bytes array, which should have total length n devices * (1 + length)
 uint8[] data
 ---
+std_msgs/Header header
 bool success

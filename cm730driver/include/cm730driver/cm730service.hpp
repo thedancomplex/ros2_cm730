@@ -77,22 +77,15 @@ namespace cm730driver
                               typename ServiceT::Response& response,
                               bool timedOut) = 0;
 
+    /** Factory method to create service implementation
+     *
+     * Creates service object, along with its ROS server
+     */
     static std::tuple<std::shared_ptr<Derived>, typename rclcpp::Service<ServiceT>::SharedPtr>
     create(
       rclcpp::Node& node, std::string const& serviceName,
-      std::shared_ptr<Cm730Device> device, std::shared_ptr<rclcpp::Clock> clock)
-    {
-      auto cm730Service = std::make_shared<Derived>(std::move(device), std::move(clock));
-      auto rclcppService = node.create_service<ServiceT>(
-        serviceName,
-        [=](std::shared_ptr<typename ServiceT::Request> request,
-            std::shared_ptr<typename ServiceT::Response> response) {
-          cm730Service->handle(request, response);
-        });
+      std::shared_ptr<Cm730Device> device, std::shared_ptr<rclcpp::Clock> clock);
 
-      return std::make_tuple(cm730Service, rclcppService);
-    }
-    
   private:
     /// Prepare packet header data
     Packet initPacket(size_t size, uint8_t deviceId) const;
@@ -186,6 +179,8 @@ namespace cm730driver
     }
 
     // Successfully read full packet, create response
+    auto now = mClock->now();
+    response->header.stamp = now;
     handlePacket(rxPacket, *request, *response, false);
   }
   
@@ -212,6 +207,24 @@ namespace cm730driver
     auto sum = std::accumulate(std::next(data.begin(), 2), std::prev(data.end(), 1), 0u);
     return ~sum;
   }
+
+  template<uint8_t INSTR, class ServiceT, class Derived>
+  std::tuple<std::shared_ptr<Derived>, typename rclcpp::Service<ServiceT>::SharedPtr>
+  Cm730Service<INSTR, ServiceT, Derived>::create(
+    rclcpp::Node& node, std::string const& serviceName,
+    std::shared_ptr<Cm730Device> device, std::shared_ptr<rclcpp::Clock> clock)
+  {
+    auto cm730Service = std::make_shared<Derived>(std::move(device), std::move(clock));
+    auto rclcppService = node.create_service<ServiceT>(
+      serviceName,
+      [=](std::shared_ptr<typename ServiceT::Request> request,
+          std::shared_ptr<typename ServiceT::Response> response) {
+        cm730Service->handle(request, response);
+      });
+    
+    return std::make_tuple(cm730Service, rclcppService);
+  }
+  
 }
 
 #endif  // CM730DRIVER__CM730SERVICE_HPP_
