@@ -12,9 +12,46 @@ namespace cm730controller
   Cm730Controller::Cm730Controller()
     : rclcpp::Node{"cm730controller"}
   {
+    writeClient_ = create_client<Write>("write");
     bulkReadClient_ = create_client<BulkRead>("bulkread");
-    cm730InfoPub_ = create_publisher<CM730Info>("cm730info");
     
+    cm730InfoPub_ = create_publisher<CM730Info>("cm730info");
+
+    while (!writeClient_->wait_for_service(1s)) {
+      if (!rclcpp::ok()) {
+        RCLCPP_ERROR(get_logger(), "Bulk read client interrupted while waiting for service to appear.");
+        return;
+      }
+      RCLCPP_INFO(get_logger(), "Waiting for CM730 driver to appear...");
+    }
+    
+    powerOn();
+  }
+  
+  Cm730Controller::~Cm730Controller()
+  {
+  }
+
+  void Cm730Controller::powerOn() {
+    auto powerOnRequest = std::make_shared<Write::Request>();
+    powerOnRequest->device_id = 200;
+    powerOnRequest->address = uint8_t(CM730Table::DXL_POWER);
+    powerOnRequest->data = {1};
+
+    RCLCPP_INFO(get_logger(), "Powering on DXL bus...");
+    writeClient_->async_send_request(
+      powerOnRequest,
+      [=](WriteClient::SharedFuture response) {
+        if (!response.get()->success) {
+          RCLCPP_ERROR(get_logger(), "Failed powering on DXL bus");
+        } else {
+          readStaticInfo();
+        }
+      });
+  }
+
+  void Cm730Controller::readStaticInfo()
+  {
     // Prepare bulk read request messages for reading static information,
     auto staticBulkReadRequest = std::make_shared<BulkRead::Request>();
     staticBulkReadRequest->read_requests = {
@@ -27,14 +64,6 @@ namespace cm730controller
       staticBulkReadRequest->read_requests.push_back(0);
     }
     
-    while (!bulkReadClient_->wait_for_service(1s)) {
-      if (!rclcpp::ok()) {
-        RCLCPP_ERROR(get_logger(), "Bulk read client interrupted while waiting for service to appear.");
-        return;
-      }
-      RCLCPP_INFO(get_logger(), "Waiting for CM730 driver to appear...");
-    }
-    
     // Request and wait for static info once
     RCLCPP_INFO(get_logger(), "Reading static info...");
     bulkReadClient_->async_send_request(
@@ -42,10 +71,6 @@ namespace cm730controller
       [=](BulkReadClient::SharedFuture response) { handleStaticInfo(response); });
   }
   
-  Cm730Controller::~Cm730Controller()
-  {
-  }
-
   void Cm730Controller::handleStaticInfo(BulkReadClient::SharedFuture response)
   {
     auto const& results = response.get()->results;
