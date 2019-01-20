@@ -10,12 +10,13 @@ namespace cm730controller {
 
   class DataUtil {
   public:
-    static uint8_t getByte(std::vector<uint8_t> const& data, CM730Table addr) {
-      return data[uint8_t(addr)];
+    static uint8_t getByte(std::vector<uint8_t> const& data, CM730Table addr, CM730Table startAddr) {
+      return data[uint8_t(addr) - uint8_t(startAddr)];
     }
 
-    static uint16_t getWord(std::vector<uint8_t> const& data, CM730Table addr) {
-      return uint16_t{data[uint8_t(addr)]} | (uint16_t{data[uint8_t(addr) + 1]} << 8);
+    static uint16_t getWord(std::vector<uint8_t> const& data, CM730Table addr, CM730Table startAddr) {
+      auto addr_ = uint8_t(addr) - uint8_t(startAddr);
+      return uint16_t{data[addr_]} | (uint16_t{data[addr_ + 1]} << 8);
     }
   };
 

@@ -47,17 +47,17 @@ namespace cm730controller
     staticCm730Info_ = std::make_shared<CM730EepromTable>();
 
     staticCm730Info_->model_number =
-      DataUtil::getWord(cm730Result.data, CM730Table::MODEL_NUMBER_L);
+      DataUtil::getWord(cm730Result.data, CM730Table::MODEL_NUMBER_L, CM730Table::MODEL_NUMBER_L);
     staticCm730Info_->version =
-      DataUtil::getByte(cm730Result.data, CM730Table::VERSION);
+      DataUtil::getByte(cm730Result.data, CM730Table::VERSION, CM730Table::MODEL_NUMBER_L);
     staticCm730Info_->id =
-      DataUtil::getByte(cm730Result.data, CM730Table::ID);
+      DataUtil::getByte(cm730Result.data, CM730Table::ID, CM730Table::MODEL_NUMBER_L);
     staticCm730Info_->baud_rate =
-      DataUtil::getByte(cm730Result.data, CM730Table::BAUD_RATE);
+      DataUtil::getByte(cm730Result.data, CM730Table::BAUD_RATE, CM730Table::MODEL_NUMBER_L);
     staticCm730Info_->return_delay_time =
-      DataUtil::getByte(cm730Result.data, CM730Table::RETURN_DELAY_TIME);
+      DataUtil::getByte(cm730Result.data, CM730Table::RETURN_DELAY_TIME, CM730Table::MODEL_NUMBER_L);
     staticCm730Info_->return_level =
-      DataUtil::getByte(cm730Result.data, CM730Table::RETURN_LEVEL);
+      DataUtil::getByte(cm730Result.data, CM730Table::RETURN_LEVEL, CM730Table::MODEL_NUMBER_L);
 
     startLoop();
   }
@@ -91,34 +91,34 @@ namespace cm730controller
     auto dynamicCm730Info = std::make_shared<CM730RamTable>();
 
     dynamicCm730Info->dynamixel_power =
-      DataUtil::getByte(cm730Result.data, CM730Table::DXL_POWER);
+      DataUtil::getByte(cm730Result.data, CM730Table::DXL_POWER, CM730Table::DXL_POWER);
 
     dynamicCm730Info->led_panel_power =
-      DataUtil::getByte(cm730Result.data, CM730Table::LED_PANEL);
+      DataUtil::getByte(cm730Result.data, CM730Table::LED_PANEL, CM730Table::DXL_POWER);
     dynamicCm730Info->led_5 =
-      DataUtil::getWord(cm730Result.data, CM730Table::LED_5_L);
+      DataUtil::getWord(cm730Result.data, CM730Table::LED_5_L, CM730Table::DXL_POWER);
     dynamicCm730Info->led_6 =
-      DataUtil::getWord(cm730Result.data, CM730Table::LED_6_L);
+      DataUtil::getWord(cm730Result.data, CM730Table::LED_6_L, CM730Table::DXL_POWER);
 
     dynamicCm730Info->button =
-      DataUtil::getByte(cm730Result.data, CM730Table::BUTTON);
+      DataUtil::getByte(cm730Result.data, CM730Table::BUTTON, CM730Table::DXL_POWER);
 
     dynamicCm730Info->gyro[0] =
-      DataUtil::getWord(cm730Result.data, CM730Table::GYRO_X_L);
+      DataUtil::getWord(cm730Result.data, CM730Table::GYRO_X_L, CM730Table::DXL_POWER);
     dynamicCm730Info->gyro[1] =
-      DataUtil::getWord(cm730Result.data, CM730Table::GYRO_Y_L);
+      DataUtil::getWord(cm730Result.data, CM730Table::GYRO_Y_L, CM730Table::DXL_POWER);
     dynamicCm730Info->gyro[2] =
-      DataUtil::getWord(cm730Result.data, CM730Table::GYRO_Z_L);
+      DataUtil::getWord(cm730Result.data, CM730Table::GYRO_Z_L, CM730Table::DXL_POWER);
 
     dynamicCm730Info->accel[0] =
-      DataUtil::getWord(cm730Result.data, CM730Table::ACCEL_X_L);
+      DataUtil::getWord(cm730Result.data, CM730Table::ACCEL_X_L, CM730Table::DXL_POWER);
     dynamicCm730Info->accel[1] =
-      DataUtil::getWord(cm730Result.data, CM730Table::ACCEL_Y_L);
+      DataUtil::getWord(cm730Result.data, CM730Table::ACCEL_Y_L, CM730Table::DXL_POWER);
     dynamicCm730Info->accel[2] =
-      DataUtil::getWord(cm730Result.data, CM730Table::ACCEL_Z_L);
+      DataUtil::getWord(cm730Result.data, CM730Table::ACCEL_Z_L, CM730Table::DXL_POWER);
 
     dynamicCm730Info->voltage =
-      DataUtil::getByte(cm730Result.data, CM730Table::VOLTAGE);
+      DataUtil::getByte(cm730Result.data, CM730Table::VOLTAGE, CM730Table::DXL_POWER);
     
     auto cm730Info = std::make_shared<CM730Info>();
     cm730Info->stat = *staticCm730Info_;
