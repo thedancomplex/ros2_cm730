@@ -23,10 +23,11 @@ namespace cm730driver
     
     size_t rxPacketSize(const BulkRead::Request& request) override {
       auto total_request_length = 0;
+      // Request are 3 tuples: (length, device_id, addr)
       for (auto iter = request.read_requests.begin(); iter != request.read_requests.end();
            std::advance(iter, 3))
-        total_request_length += *iter;
-      return HEADER_SIZE + total_request_length + CHECKSUM_SIZE;
+        total_request_length += HEADER_SIZE + *iter + CHECKSUM_SIZE;
+      return total_request_length;
     }
     
     uint8_t getDeviceId(const BulkRead::Request& request) override
@@ -53,20 +54,21 @@ namespace cm730driver
     {
       response.success = !timedOut;
       if (response.success) {
-        auto dataCursor = std::next(packet.begin(), HEADER_SIZE);
-        // Go through each requested device
-        for (auto iter = request.read_requests.begin(); iter != request.read_requests.end();
-             std::advance(iter, 3)) {
+        auto dataCursor = packet.begin();
+        // Go through received message, 1 per requested device
+        for (auto i = 0u; i < request.read_requests.size() / 3; ++i) {
           auto result = cm730driver_msgs::msg::RangeReadResult{};
-          // Get device and how much was meant to read from original request
-          result.device_id = *std::next(iter, 1);
-          auto resultLength = *std::next(iter, 0);
-          // Copy data into result
-          std::copy(dataCursor, std::next(dataCursor, resultLength),
-                    std::back_inserter(result.data));
+          // Get device for which result is, and how much data was sent
+          // TODO: check this si the same as requested
+          result.device_id = *(dataCursor + ADDR_ID);
+          auto length = *(dataCursor + ADDR_LENGTH) - ERROR_SIZE - CHECKSUM_SIZE;
+          // Copy response data
+          std::advance(dataCursor, ADDR_DATA);
+          std::copy(dataCursor, std::next(dataCursor, length), std::back_inserter(result.data));
+          // Add to total result
           response.results.push_back(result);
-          // Advance location in received packet
-          std::advance(dataCursor, resultLength);
+          // Advance to next message
+          std::advance(dataCursor, length + CHECKSUM_SIZE);
         }
       }
     }
