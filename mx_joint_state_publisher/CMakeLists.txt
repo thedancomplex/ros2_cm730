@@ -73,6 +73,9 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+ament_export_dependencies(
+  "sensor_msgs"
+)
 ament_export_include_directories(
   include
 )
