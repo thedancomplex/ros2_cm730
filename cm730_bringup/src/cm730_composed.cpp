@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
   rclcpp::init(argc, argv);
 
-  rclcpp::executors::SingleThreadedExecutor exec{};
+  rclcpp::executors::MultiThreadedExecutor exec{};
 
   auto driverNode = std::make_shared<cm730driver::Cm730Driver>();
   auto controllerNode = std::make_shared<cm730controller::Cm730Controller>();
