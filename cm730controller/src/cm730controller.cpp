@@ -12,11 +12,11 @@ namespace cm730controller
   Cm730Controller::Cm730Controller()
     : rclcpp::Node{"cm730controller"}
   {
-    writeClient_ = create_client<Write>("write");
-    bulkReadClient_ = create_client<BulkRead>("bulkread");
+    writeClient_ = create_client<Write>("/cm730/write");
+    bulkReadClient_ = create_client<BulkRead>("/cm730/bulkread");
     
-    cm730InfoPub_ = create_publisher<CM730Info>("cm730info");
-    mx28InfoPub_ = create_publisher<MX28InfoArray>("mx28info");
+    cm730InfoPub_ = create_publisher<CM730Info>("/cm730/cm730info");
+    mx28InfoPub_ = create_publisher<MX28InfoArray>("/cm730/mx28info");
     
     while (!writeClient_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {

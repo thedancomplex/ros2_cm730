@@ -36,7 +36,7 @@ namespace mx_joint_state_publisher
     jointStatePub_ = create_publisher<JointState>("joint_states");
     
     mx28InfoSub_ = create_subscription<MX28InfoArray>(
-      "mx28info",
+      "/cm730/mx28info",
       [=](MX28InfoArray::SharedPtr info) {
         auto jointStateMsg = std::make_shared<JointState>();
         for (auto const& mx : info->mx28s) {

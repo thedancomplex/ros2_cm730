@@ -20,11 +20,11 @@ namespace cm730driver
     mDevice = std::make_shared<Cm730Device>("/dev/ttyUSB0");
     mDevice->open();
 
-    mPingServer = PingService::create(*this, "ping", mDevice, get_clock());
-    mReadServer = ReadService::create(*this, "read", mDevice, get_clock());
-    mWriteServer = WriteService::create(*this, "write", mDevice, get_clock());
-    mBulkReadServer = BulkReadService::create(*this, "bulkread", mDevice, get_clock());
-    mSyncWriteServer = SyncWriteService::create(*this, "syncwrite", mDevice, get_clock());
+    mPingServer = PingService::create(*this, "/cm730/ping", mDevice, get_clock());
+    mReadServer = ReadService::create(*this, "/cm730/read", mDevice, get_clock());
+    mWriteServer = WriteService::create(*this, "/cm730/write", mDevice, get_clock());
+    mBulkReadServer = BulkReadService::create(*this, "/cm730/bulkread", mDevice, get_clock());
+    mSyncWriteServer = SyncWriteService::create(*this, "/cm730/syncwrite", mDevice, get_clock());
   }
 
   Cm730Driver::~Cm730Driver()
