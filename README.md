@@ -17,12 +17,29 @@ their interactions:
 
 ![CM-730 ROS 2 diagram](https://robocuplab.herts.ac.uk/ros2/cm730driver/raw/master/cm730ros2diagram.svg)
 
-## `cm730driver`
+## Bring Up
+
+The individual nodes, described below, can be started separately, but you can start all nodes in the following ways:
+
+1. Using `launch`: the `cm730_bringup` package supplies a launch file
+   that brings up all the nodes:
+   
+        ros2 launch cm730_bringup cm730_bringup.launch.py
+   
+2. Using a composed executable: the `cm730_bringup` package supplies
+    an executable that runs all nodes in a single process. Because the
+    nodes share the same memory space, this may be more efficient:
+    
+        ros2 run cm730_bringup cm730_composed
+
+## Components
+
+### `cm730driver`
 
 Performs the actual communication with the CM-730 over USB, exposes
 ROS 2 services that map to the Dynamixel serial protocol.
 
-## `cm730controller`
+### `cm730controller`
 
 Runs a 125Hz loop that reads and writes to the cm730driver. It
 transforms the raw byte messages from the driver to structured
@@ -30,7 +47,7 @@ transforms the raw byte messages from the driver to structured
 subscribes to commands to be transformed into driver write requests
 (TODO).
 
-## `mx_joint_state_publisher`
+### `mx_joint_state_publisher`
 
 Transforms motor information messages into standard ROS 2
 `sensor_msgs/JointState` messages, to be used for instance by ROS 2's
