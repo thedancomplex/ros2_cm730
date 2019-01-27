@@ -14,6 +14,15 @@ namespace cm730controller
   {
     writeClient_ = create_client<Write>("/cm730/write");
     bulkReadClient_ = create_client<BulkRead>("/cm730/bulkread");
+    syncWriteClient_ = create_client<SyncWrite>("/cm730/syncwrite");
+    
+    mx28CommandSub_ = create_subscription<MX28CommandArray>(
+      "/cm730/mx28command",
+      [this](MX28CommandArray::SharedPtr cmd) {
+        RCLCPP_INFO(get_logger(), "Received MX28 command");
+        std::lock_guard<std::mutex> lock{mx28CommandMutex_};
+        mx28Command_ = cmd;
+      });
     
     cm730InfoPub_ = create_publisher<CM730Info>("/cm730/cm730info");
     mx28InfoPub_ = create_publisher<MX28InfoArray>("/cm730/mx28info");
@@ -231,6 +240,39 @@ namespace cm730controller
       mx28Infos->mx28s.push_back(*mx28Info);
     }
     mx28InfoPub_->publish(mx28Infos);
+  }
+
+  void Cm730Controller::writeCommands() {
+    auto mx28Command = grabCommand<MX28CommandArray>(mx28Command_, mx28CommandMutex_);
+    if (mx28Command != nullptr) {
+      RCLCPP_INFO(get_logger(), "Sending MX28 command");
+      auto syncWriteRequest = std::make_shared<SyncWrite::Request>();
+      // -1 becuase to first byte in the data is the device id, so real data starts at 1
+      auto startAddr = MX28Table(uint8_t(MX28Table::TORQUE_ENABLE) - 1);
+      
+      syncWriteRequest->address = uint8_t(MX28Table::TORQUE_ENABLE);
+      syncWriteRequest->length = uint8_t(MX28Table::GOAL_POSITION_H) - uint8_t(MX28Table::TORQUE_ENABLE) + 1;
+      syncWriteRequest->data.resize((1 + syncWriteRequest->length) * mx28Command->mx28s.size());
+
+      auto dataIter = syncWriteRequest->data.begin();
+      for (auto const& mx28 : mx28Command->mx28s) {
+        DataUtil::setByte(mx28.device_id, dataIter, 0, 0);
+        DataUtil::setByte(mx28.torque ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE, startAddr);
+        DataUtil::setByte(mx28.led ? 1 : 0, dataIter, MX28Table::LED, startAddr);        
+        DataUtil::setByte(mx28.d_gain, dataIter, MX28Table::D_GAIN, startAddr);        
+        DataUtil::setByte(mx28.i_gain, dataIter, MX28Table::I_GAIN, startAddr);
+        DataUtil::setByte(mx28.p_gain, dataIter, MX28Table::P_GAIN, startAddr);
+        // Don't set RESERVED byte
+        DataUtil::setWord(mx28.goal_position, dataIter, MX28Table::GOAL_POSITION_L, startAddr);
+
+        std::advance(dataIter, 1 + syncWriteRequest->length);
+      }
+      syncWriteClient_->async_send_request(
+        syncWriteRequest,
+        [this](SyncWriteClient::SharedFuture response) {
+          RCLCPP_INFO(get_logger(), "Command write finished, success: " + std::to_string(response.get()->success));
+        });
+    }
   }
   
 }  // namespace cm730controller
