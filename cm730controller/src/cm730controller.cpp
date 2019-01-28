@@ -16,9 +16,9 @@ namespace cm730controller
     bulkReadClient_ = create_client<BulkRead>("/cm730/bulkread");
     syncWriteClient_ = create_client<SyncWrite>("/cm730/syncwrite");
     
-    mx28CommandSub_ = create_subscription<MX28CommandArray>(
+    mx28CommandSub_ = create_subscription<MX28Command>(
       "/cm730/mx28command",
-      [this](MX28CommandArray::SharedPtr cmd) {
+      [this](MX28Command::SharedPtr cmd) {
         RCLCPP_INFO(get_logger(), "Received MX28 command");
         std::lock_guard<std::mutex> lock{mx28CommandMutex_};
         mx28Command_ = cmd;
@@ -240,30 +240,49 @@ namespace cm730controller
       mx28Infos->mx28s.push_back(*mx28Info);
     }
     mx28InfoPub_->publish(mx28Infos);
+
+    writeCommands();
   }
 
   void Cm730Controller::writeCommands() {
-    auto mx28Command = grabCommand<MX28CommandArray>(mx28Command_, mx28CommandMutex_);
+    auto mx28Command = grabCommand<MX28Command>(mx28Command_, mx28CommandMutex_);
     if (mx28Command != nullptr) {
       RCLCPP_INFO(get_logger(), "Sending MX28 command");
       auto syncWriteRequest = std::make_shared<SyncWrite::Request>();
-      // -1 becuase to first byte in the data is the device id, so real data starts at 1
-      auto startAddr = MX28Table(uint8_t(MX28Table::TORQUE_ENABLE) - 1);
+
+      auto startAddr =
+        !mx28Command->torque.empty() ? MX28Table::TORQUE_ENABLE :
+        !mx28Command->led.empty() ? MX28Table::LED :
+        !mx28Command->d_gain.empty() ? MX28Table::D_GAIN :
+        MX28Table::GOAL_POSITION_L;
       
-      syncWriteRequest->address = uint8_t(MX28Table::TORQUE_ENABLE);
-      syncWriteRequest->length = uint8_t(MX28Table::GOAL_POSITION_H) - uint8_t(MX28Table::TORQUE_ENABLE) + 1;
-      syncWriteRequest->data.resize((1 + syncWriteRequest->length) * mx28Command->mx28s.size());
+      auto endAddr =
+        !mx28Command->goal_position.empty() ? MX28Table::GOAL_POSITION_H :
+        !mx28Command->p_gain.empty() ? MX28Table::P_GAIN :
+        !mx28Command->led.empty() ? MX28Table::LED :
+        MX28Table::TORQUE_ENABLE;
+      
+      syncWriteRequest->address = uint8_t(startAddr);
+      syncWriteRequest->length = uint8_t(endAddr) - uint8_t(startAddr) + 1;
+      syncWriteRequest->data.resize((1 + syncWriteRequest->length) * mx28Command->device_id.size());
 
       auto dataIter = syncWriteRequest->data.begin();
-      for (auto const& mx28 : mx28Command->mx28s) {
-        DataUtil::setByte(mx28.device_id, dataIter, 0, 0);
-        DataUtil::setByte(mx28.torque ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE, startAddr);
-        DataUtil::setByte(mx28.led ? 1 : 0, dataIter, MX28Table::LED, startAddr);        
-        DataUtil::setByte(mx28.d_gain, dataIter, MX28Table::D_GAIN, startAddr);        
-        DataUtil::setByte(mx28.i_gain, dataIter, MX28Table::I_GAIN, startAddr);
-        DataUtil::setByte(mx28.p_gain, dataIter, MX28Table::P_GAIN, startAddr);
-        // Don't set RESERVED byte
-        DataUtil::setWord(mx28.goal_position, dataIter, MX28Table::GOAL_POSITION_L, startAddr);
+      // -1 becuase to first byte in the data is the device id, so real data starts at 1
+      auto dataStartAddr = MX28Table(uint8_t(startAddr) - 1);
+      
+      for (auto i = 0; i < mx28Command->device_id.size(); ++i) {
+        DataUtil::setByte(mx28Command->device_id[i], dataIter, 0, 0);
+        if (MX28Table::TORQUE_ENABLE >= startAddr && MX28Table::TORQUE_ENABLE <= endAddr)
+          DataUtil::setByte(mx28Command->torque[i] ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE, dataStartAddr);
+        if (MX28Table::LED >= startAddr && MX28Table::LED <= endAddr)
+          DataUtil::setByte(mx28Command->led[i] ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE, dataStartAddr);
+        if (MX28Table::D_GAIN >= startAddr && MX28Table::P_GAIN <= endAddr) {
+          DataUtil::setByte(mx28Command->d_gain[i], dataIter, MX28Table::D_GAIN, dataStartAddr);        
+          DataUtil::setByte(mx28Command->i_gain[i], dataIter, MX28Table::I_GAIN, dataStartAddr);
+          DataUtil::setByte(mx28Command->p_gain[i], dataIter, MX28Table::P_GAIN, dataStartAddr);
+        }
+        if (MX28Table::GOAL_POSITION_L >= startAddr && MX28Table::GOAL_POSITION_H <= endAddr)
+          DataUtil::setWord(mx28Command->goal_position[i], dataIter, MX28Table::GOAL_POSITION_L, dataStartAddr);
 
         std::advance(dataIter, 1 + syncWriteRequest->length);
       }

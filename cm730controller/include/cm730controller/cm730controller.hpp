@@ -7,7 +7,7 @@
 #include <cm730driver_msgs/srv/sync_write.hpp>
 #include <cm730controller_msgs/msg/cm730_info.hpp>
 #include <cm730controller_msgs/msg/mx28_info_array.hpp>
-#include <cm730controller_msgs/msg/mx28_command_array.hpp>
+#include <cm730controller_msgs/msg/mx28_command.hpp>
 
 #include "cm730controller/visibility_control.h"
 
@@ -29,7 +29,7 @@ namespace cm730controller
     
     using CM730Info = cm730controller_msgs::msg::CM730Info;
     using MX28InfoArray = cm730controller_msgs::msg::MX28InfoArray;
-    using MX28CommandArray = cm730controller_msgs::msg::MX28CommandArray;
+    using MX28Command = cm730controller_msgs::msg::MX28Command;
     
     using CM730EepromTable = cm730controller_msgs::msg::CM730EepromTable;
     using MX28EepromTable = cm730controller_msgs::msg::MX28EepromTable;
@@ -44,10 +44,10 @@ namespace cm730controller
     SyncWriteClient::SharedPtr syncWriteClient_;
     
     // Subscribers
-    rclcpp::Subscription<MX28CommandArray>::SharedPtr mx28CommandSub_;
+    rclcpp::Subscription<MX28Command>::SharedPtr mx28CommandSub_;
 
     std::mutex mx28CommandMutex_;
-    MX28CommandArray::SharedPtr mx28Command_;
+    MX28Command::SharedPtr mx28Command_;
     
     // Publishers
     rclcpp::Publisher<CM730Info>::SharedPtr cm730InfoPub_;

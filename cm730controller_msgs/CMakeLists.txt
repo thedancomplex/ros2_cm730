@@ -24,7 +24,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MX28Info.msg"
   "msg/MX28InfoArray.msg"
   "msg/MX28Command.msg"
-  "msg/MX28CommandArray.msg"
   DEPENDENCIES builtin_interfaces
 )
 
