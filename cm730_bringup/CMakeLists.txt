@@ -20,7 +20,7 @@ find_package(ament_cmake_ros REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(cm730driver REQUIRED)
 find_package(cm730controller REQUIRED)
-find_package(mx_joint_state_publisher REQUIRED)
+find_package(mx_joint_controller REQUIRED)
 
 add_executable(cm730_composed src/cm730_composed.cpp)
 target_include_directories(cm730_composed PUBLIC
@@ -30,7 +30,7 @@ ament_target_dependencies(cm730_composed
   "rclcpp"
   "cm730driver"
   "cm730controller"
-  "mx_joint_state_publisher")
+  "mx_joint_controller")
 
 install(TARGETS cm730_composed
   EXPORT export_${PROJECT_NAME}

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
-  <name>mx_joint_state_publisher</name>
+  <name>mx_joint_controller</name>
   <version>0.0.0</version>
-  <description>Publishes joint states based on Dynamixel MX motor info</description>
+  <description>Controls MX servo joints joints and publishes their states, using the cm730controller</description>
   <maintainer email="sgvandijk@gmail.com">sander</maintainer>
   <license>TODO: License declaration</license>
 

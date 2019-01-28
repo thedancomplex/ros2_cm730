@@ -1,22 +1,22 @@
-#ifndef MX_JOINT_STATE_PUBLISHER__MX_JOINT_STATE_PUBLISHER_HPP_
-#define MX_JOINT_STATE_PUBLISHER__MX_JOINT_STATE_PUBLISHER_HPP_
+#ifndef MX_JOINT_CONTROLLER__MX_JOINT_CONTROLLER_HPP_
+#define MX_JOINT_CONTROLLER__MX_JOINT_CONTROLLER_HPP_
 
-#include "mx_joint_state_publisher/visibility_control.h"
+#include "mx_joint_controller/visibility_control.h"
 
 #include <rclcpp/rclcpp.hpp>
 #include <cm730controller_msgs/msg/mx28_info_array.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <cmath>
 
-namespace mx_joint_state_publisher
+namespace mx_joint_controller
 {
 
-  class MxJointStatePublisher : public rclcpp::Node
+  class MxJointController : public rclcpp::Node
   {
   public:
-    MxJointStatePublisher();
+    MxJointController();
     
-    virtual ~MxJointStatePublisher();
+    virtual ~MxJointController();
 
   private:
     using MX28InfoArray = cm730controller_msgs::msg::MX28InfoArray;
@@ -31,6 +31,6 @@ namespace mx_joint_state_publisher
 
   };
   
-}  // namespace mx_joint_state_publisher
+}  // namespace mx_joint_controller
 
-#endif  // MX_JOINT_STATE_PUBLISHER__MX_JOINT_STATE_PUBLISHER_HPP_
+#endif  // MX_JOINT_CONTROLLER__MX_JOINT_CONTROLLER_HPP_

@@ -1,6 +1,6 @@
 #include <cm730driver/cm730driver.hpp>
 #include <cm730controller/cm730controller.hpp>
-#include <mx_joint_state_publisher/mx_joint_state_publisher.hpp>
+#include <mx_joint_controller/mx_joint_controller.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 int main(int argc, char* argv[]) {
@@ -8,20 +8,20 @@ int main(int argc, char* argv[]) {
 
   rclcpp::executors::MultiThreadedExecutor exec{};
 
-  auto driverNode = std::make_shared<cm730driver::Cm730Driver>();
-  auto controllerNode = std::make_shared<cm730controller::Cm730Controller>();
-  auto jointStatePublisherNode = std::make_shared<mx_joint_state_publisher::MxJointStatePublisher>();
+  auto cmy730DriverNode = std::make_shared<cm730driver::Cm730Driver>();
+  auto cm730ControllerNode = std::make_shared<cm730controller::Cm730Controller>();
+  auto jointControllerNode = std::make_shared<mx_joint_controller::MxJointController>();
 
-  exec.add_node(driverNode);
-  exec.add_node(controllerNode);
-  exec.add_node(jointStatePublisherNode);
+  exec.add_node(cmy730DriverNode);
+  exec.add_node(cm730ControllerNode);
+  exec.add_node(jointControllerNode);
 
   exec.spin();
   
   rclcpp::shutdown();
-  driverNode = nullptr;
-  controllerNode = nullptr;
-  jointStatePublisherNode = nullptr;
+  cmy730DriverNode = nullptr;
+  cm730ControllerNode = nullptr;
+  jointControllerNode = nullptr;
 
   return 0;
 }

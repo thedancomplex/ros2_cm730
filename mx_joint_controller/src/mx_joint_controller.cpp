@@ -1,10 +1,10 @@
-#include "mx_joint_state_publisher/mx_joint_state_publisher.hpp"
+#include "mx_joint_controller/mx_joint_controller.hpp"
 
-namespace mx_joint_state_publisher
+namespace mx_joint_controller
 {
 
-  MxJointStatePublisher::MxJointStatePublisher()
-    : rclcpp::Node{"mx_joint_state_publisher"}
+  MxJointController::MxJointController()
+    : rclcpp::Node{"mx_joint_controller"}
   {
     auto jointNames = std::vector<std::string>{};
     get_parameter_or("joint_names", jointNames, {
@@ -47,8 +47,8 @@ namespace mx_joint_state_publisher
       });
   }
   
-  MxJointStatePublisher::~MxJointStatePublisher()
+  MxJointController::~MxJointController()
   {
   }
 
-}  // namespace mx_joint_state_publisher
+}  // namespace mx_joint_controller
