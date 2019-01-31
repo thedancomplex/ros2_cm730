@@ -11,6 +11,6 @@ def generate_launch_description():
              output='screen'),
         Node(package='cm730controller', node_executable='cm730controller_node',
              output='screen'),
-        Node(package='mx_joint_state_publisher', node_executable='mx_joint_state_publisher_node',
+        Node(package='mx_joint_controller', node_executable='mx_joint_controller_node',
              output='screen')
 ])

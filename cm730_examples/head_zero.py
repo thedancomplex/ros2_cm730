@@ -1,21 +1,19 @@
 import rclpy
 
-from cm730controller_msgs.msg import MX28Command, MX28Command
+from mx_joint_controller_msgs.msg import JointCommand
 
 def main(args=None):
     rclpy.init(args=args)
 
     node = rclpy.create_node('head_zero_publisher')
-    publisher = node.create_publisher(MX28Command, '/cm730/mx28command')
+    publisher = node.create_publisher(JointCommand, '/cm730/joint_commands')
 
-    msg = MX28Command(
-        device_id=[19, 20],
-        torque=[True, True],
-        led=[False, False],
-        d_gain=[0, 0],
-        i_gain=[0, 0],
-        p_gain=[32, 32],
-        goal_position=[0x800, 0x800]
+    msg = JointCommand(
+        name=["head-pan", "head-tilt"],
+        p_gain=[4.0, 4.0],
+        i_gain=[0.0, 0.0],
+        d_gain=[0.0, 0.0],
+        position=[0.0, 0.0]
     )
 
     def timer_callback():

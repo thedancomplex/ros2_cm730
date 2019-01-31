@@ -22,6 +22,7 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(cm730controller_msgs REQUIRED)
+find_package(mx_joint_controller_msgs REQUIRED)
 
 add_library(mx_joint_controller
   src/mx_joint_controller.cpp)
@@ -34,7 +35,8 @@ ament_target_dependencies(mx_joint_controller
   "rclcpp"
   "std_msgs"
   "sensor_msgs"
-  "cm730controller_msgs")
+  "cm730controller_msgs"
+  "mx_joint_controller_msgs")
 
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
@@ -75,6 +77,7 @@ endif()
 
 ament_export_dependencies(
   "sensor_msgs"
+  "mx_joint_controller_msgs"
 )
 ament_export_include_directories(
   include

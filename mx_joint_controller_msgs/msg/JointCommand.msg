@@ -2,7 +2,7 @@
 #
 # A command consists of:
 # * the goal position of the joint (rad)
-# * the PID parameters of the built in controller
+# * the PID parameters of the built in controller (if one parameter is given, all must be given)
 #
 # Each joint is uniquely identified by its name
 #
@@ -16,7 +16,7 @@
 # states.
 
 string[] name
-float32[] position
 float32[] p_gain
 float32[] i_gain
 float32[] d_gain
+float32[] position

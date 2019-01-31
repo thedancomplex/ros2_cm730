@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'cm730controller_examples'
+package_name = 'cm730_examples'
 
 setup(
     name=package_name,
