@@ -7,7 +7,8 @@ setup(
     version='0.0.0',
     packages=[],
     py_modules=[
-        'head_zero'
+        'head_zero',
+        'torque_off'
     ],
     data_files=[],
     install_requires=['setuptools'],
@@ -17,7 +18,8 @@ setup(
     description='Examples using the CM730-controller',
     entry_points={
         'console_scripts': [
-            'head_zero = head_zero:main'
+            'head_zero = head_zero:main',
+            'torque_off = torque_off:main'
         ],
     },
 )
