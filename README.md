@@ -25,7 +25,13 @@ The individual nodes, described below, can be started separately, but you can st
    that brings up all the nodes:
    
         ros2 launch cm730_bringup cm730_bringup.launch.py
-   
+
+    There is also a launch file that launches all the nodes except for
+    the driver node. This is useful when you want to run the driver on
+    the robot and all other nodes externally:
+
+        ros2 launch cm730_bringup cm730_bringup_nodriver.launch.py
+
 2. Using a composed executable: the `cm730_bringup` package supplies
     an executable that runs all nodes in a single process. Because the
     nodes share the same memory space, this may be more efficient:
@@ -43,12 +49,17 @@ ROS 2 services that map to the Dynamixel serial protocol.
 
 Runs a 125Hz loop that reads and writes to the cm730driver. It
 transforms the raw byte messages from the driver to structured
-`CM730Info` and `MX28Info` messages and publishes these. It also
-subscribes to commands to be transformed into driver write requests
-(TODO).
+`CM730Info` and `MX28Info` messages and publishes these (topics:
+`/cm730/cm730info` and `/cm730/mx28info`). It also subscribes to the
+`/cm730/mx28command` topic, to receive `MX28Command` messages that it
+transforms into driver write requests.
 
-### `mx_joint_state_publisher`
+### `mx_joint_controller`
 
-Transforms motor information messages into standard ROS 2
-`sensor_msgs/JointState` messages, to be used for instance by ROS 2's
-`robot_state_publisher` node.
+Provides a higher level interface to servo motors than
+`cm730controller`: rather than using raw bytes, it subscribes to
+`JointCommand` messages that contain data in standard units (topic:
+`/cm730/joint_commands`), and it transforms motor information messages
+into standard ROS 2 `sensor_msgs/JointState` (topic: `/joint_states`)
+messages, to be used for instance by ROS 2's `robot_state_publisher`
+node.
