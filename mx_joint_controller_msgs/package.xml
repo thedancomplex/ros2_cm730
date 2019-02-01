@@ -3,9 +3,11 @@
 <package format="3">
   <name>mx_joint_controller_msgs</name>
   <description>Custom messages for controller MX motors.</description>
-  <version>0.0.0</version>
-  <maintainer email="sgvandijk@gmail.com">sander</maintainer>
+  <version>0.1.0</version>
+  <maintainer email="sgvandijk@gmail.com">Sander G. van Dijk</maintainer>
   <license>TODO: License declaration</license>
+
+  <author>Sander G. van Dijk</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
