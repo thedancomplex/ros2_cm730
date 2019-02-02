@@ -8,6 +8,6 @@ int main(int argc, char ** argv)
   rclcpp::spin(node);
   rclcpp::shutdown();
   node = nullptr;
-  
+
   return 0;
 }

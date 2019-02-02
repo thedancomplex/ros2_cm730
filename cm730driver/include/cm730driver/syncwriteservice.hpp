@@ -8,45 +8,52 @@
 
 namespace cm730driver
 {
-  class SyncWriteService : public Cm730Service<SYNC_WRITE_INSTR, cm730driver_msgs::srv::SyncWrite, SyncWriteService>
+class SyncWriteService : public Cm730Service<SYNC_WRITE_INSTR, cm730driver_msgs::srv::SyncWrite,
+    SyncWriteService>
+{
+public:
+  using Base = Cm730Service<SYNC_WRITE_INSTR, cm730driver_msgs::srv::SyncWrite, SyncWriteService>;
+  using SyncWrite = cm730driver_msgs::srv::SyncWrite;
+
+  using Base::Base;
+
+  size_t txPacketSize(const SyncWrite::Request & request) override
   {
-  public:
-    using Base = Cm730Service<SYNC_WRITE_INSTR, cm730driver_msgs::srv::SyncWrite, SyncWriteService>;
-    using SyncWrite = cm730driver_msgs::srv::SyncWrite;
+    return HEADER_SIZE + 2 + request.data.size() + CHECKSUM_SIZE;
+  }
 
-    using Base::Base;
+  size_t rxPacketSize(const SyncWrite::Request & request) override
+  {
+    (void)request;
+    return HEADER_SIZE + CHECKSUM_SIZE;
+  }
 
-    size_t txPacketSize(const SyncWrite::Request& request) override {
-      return HEADER_SIZE + 2 + request.data.size() + CHECKSUM_SIZE;
-    }
+  uint8_t getDeviceId(const SyncWrite::Request & request) override
+  {
+    (void)request;
+    return 254;
+  }
 
-    size_t rxPacketSize(const SyncWrite::Request& request) override {
-      (void)request;
-      return HEADER_SIZE + CHECKSUM_SIZE;
-    }
+  void setDataParameters(const SyncWrite::Request & request, Packet & packet) override
+  {
+    packet[ADDR_PARAMETER] = request.address;
+    packet[ADDR_PARAMETER + 1] = request.length;
 
-    uint8_t getDeviceId(const SyncWrite::Request& request) override {
-      (void)request;
-      return 254;
-    }
+    std::copy(request.data.begin(), request.data.end(), std::next(
+        packet.begin(), ADDR_PARAMETER + 2));
+  }
 
-    void setDataParameters(const SyncWrite::Request& request, Packet& packet) override {
-      packet[ADDR_PARAMETER] = request.address;
-      packet[ADDR_PARAMETER + 1] = request.length;
-
-      std::copy(request.data.begin(), request.data.end(), std::next(packet.begin(), ADDR_PARAMETER + 2));
-    }
-
-    void handlePacket(Packet const& packet,
-                      const SyncWrite::Request& request,
-                      SyncWrite::Response& response,
-                      bool timedOut) override
-    {
-      (void)packet;
-      (void)request;
-      response.success = !timedOut;
-    }
-  };
+  void handlePacket(
+    Packet const & packet,
+    const SyncWrite::Request & request,
+    SyncWrite::Response & response,
+    bool timedOut) override
+  {
+    (void)packet;
+    (void)request;
+    response.success = !timedOut;
+  }
+};
 }
 
 #endif
