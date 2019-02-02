@@ -65,7 +65,7 @@ if(BUILD_TESTING)
   set(ament_cmake_copyright_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
-  
+
   ament_add_gtest(${PROJECT_NAME}_cm730service_tests test/cm730service_tests.cpp)
   if(TARGET ${PROJECT_NAME}_cm730service_tests)
     target_include_directories(${PROJECT_NAME}_cm730service_tests PUBLIC
