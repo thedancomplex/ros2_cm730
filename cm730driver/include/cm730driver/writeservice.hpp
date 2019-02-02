@@ -43,12 +43,11 @@ public:
   void handlePacket(
     Packet const & packet,
     Write::Request const & request,
-    Write::Response & response,
-    bool timedOut) override
+    Write::Response & response) override
   {
     (void)packet;
     (void)request;
-    response.success = !timedOut;
+    (void)response;
   }
 };
 

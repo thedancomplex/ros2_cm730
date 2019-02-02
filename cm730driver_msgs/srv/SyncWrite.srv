@@ -11,4 +11,4 @@ uint8 length
 uint8[] data
 ---
 std_msgs/Header header
-bool success
+uint16 error

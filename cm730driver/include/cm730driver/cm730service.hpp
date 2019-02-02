@@ -31,7 +31,20 @@ public:
     ADDR_INSTRUCTION = 4,
     ADDR_PARAMETER = 5,    // For TX packet
     ADDR_ERROR = 4,        // For RX packet
-    ADDR_DATA = 5          // For RX packe
+    ADDR_DATA = 5,         // For RX packet
+  };
+
+  enum ErrorFlag : uint16_t
+  {
+    VOLTAGE_ERROR = 0x01,
+    ANGLE_LIMIT_ERROR = 0x02,
+    OVERHEATING_ERROR = 0x04,
+    RANGE_ERROR = 0x08,
+    CHECKSUM_ERROR = 0x10,
+    OVERLOAD_ERROR = 0x20,
+    INSTRUCTION_ERROR = 0x40,
+    TIMEOUT_ERROR = 0x0100,
+    CORRUPT_RESPONSE_ERROR = 0x0200,
   };
 
   /// Packet data
@@ -93,8 +106,7 @@ public:
   virtual void handlePacket(
     Packet const & packet,
     const typename ServiceT::Request & request,
-    typename ServiceT::Response & response,
-    bool timedOut) = 0;
+    typename ServiceT::Response & response) = 0;
 
   /** Factory method to create service implementation
    *
@@ -127,6 +139,7 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
   std::shared_ptr<typename ServiceT::Request> request,
   std::shared_ptr<typename ServiceT::Response> response)
 {
+#if (RCLCPP_LOG_MIN_SEVERITY <= RCLCPP_LOG_MIN_SEVERITY_DEBUG)
   {
     auto str = std::ostringstream{};
     str <<
@@ -134,6 +147,7 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
       rosidl_generator_traits::data_type<typename ServiceT::Request>();
     RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
   }
+#endif
 
   // Flush any unread bytes
   mDevice->clear();
@@ -143,6 +157,7 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
   setDataParameters(*request, txPacket);
   setChecksum(txPacket);
 
+#if (RCLCPP_LOG_MIN_SEVERITY <= RCLCPP_LOG_MIN_SEVERITY_DEBUG)
   {
     auto str = std::ostringstream{};
     str << "Writing: ";
@@ -151,6 +166,7 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
     }
     RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
   }
+#endif
 
   // Send packet
   mDevice->write(txPacket.data(), txPacket.size());
@@ -165,7 +181,7 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
     auto readingTime = mClock->now() - readStartTime;
     if (readingTime.nanoseconds() / 1e6 > 12) {
       RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), "Timed out");
-      handlePacket(rxPacket, *request, *response, true);
+      response->error = ErrorFlag::TIMEOUT_ERROR;
       return;
     }
 
@@ -175,6 +191,7 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
       // A positive amount of bytes is good
       nRead += n;
 
+#if (RCLCPP_LOG_MIN_SEVERITY <= RCLCPP_LOG_MIN_SEVERITY_DEBUG)
       // Log what we've read so far
       {
         auto str = std::ostringstream{};
@@ -184,15 +201,38 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
         }
         RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
       }
+#endif
     }
 
     rclcpp::sleep_for(std::chrono::microseconds{100});
   }
 
-  // Successfully read full packet, create response
+  // Pakcet fully read, set timestamp
   auto now = mClock->now();
   response->header.stamp = now;
-  handlePacket(rxPacket, *request, *response, false);
+
+  // Check checksum
+  if (!checkChecksum(rxPacket)) {
+    auto str = std::ostringstream{};
+    str << "Corrupt packet, invalid checksum: " << nRead << " - ";
+    for (auto i = 0u; i < nRead; ++i) {
+      str << int{rxPacket[i]} << " ";
+    }
+    RCLCPP_ERROR(rclcpp::get_logger("cm730service"), str.str());
+    response->error = ErrorFlag::CORRUPT_RESPONSE_ERROR;
+    return;
+  }
+
+  // Check error byte
+  if (rxPacket[ADDR_ERROR] != 0) {
+    RCLCPP_ERROR(rclcpp::get_logger("cm730service"),
+      "Received error byte: " + std::to_string(rxPacket[ADDR_ERROR]));
+    response->error = rxPacket[ADDR_ERROR];
+    return;
+  }
+
+  // Successfully read full packet, create response
+  handlePacket(rxPacket, *request, *response);
 }
 
 template<uint8_t INSTR, class ServiceT, class Derived>

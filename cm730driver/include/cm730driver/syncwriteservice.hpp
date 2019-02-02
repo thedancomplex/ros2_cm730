@@ -46,12 +46,11 @@ public:
   void handlePacket(
     Packet const & packet,
     const SyncWrite::Request & request,
-    SyncWrite::Response & response,
-    bool timedOut) override
+    SyncWrite::Response & response) override
   {
     (void)packet;
     (void)request;
-    response.success = !timedOut;
+    (void)response;
   }
 };
 }

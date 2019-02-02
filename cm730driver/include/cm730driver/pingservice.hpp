@@ -43,12 +43,11 @@ public:
   void handlePacket(
     Packet const & packet,
     Ping::Request const & request,
-    Ping::Response & response,
-    bool timedOut) override
+    Ping::Response & response)
   {
     (void)packet;
     (void)request;
-    response.success = !timedOut;
+    (void)response;
   }
 };
 

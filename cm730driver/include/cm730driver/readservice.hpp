@@ -42,15 +42,11 @@ public:
   void handlePacket(
     Packet const & packet,
     Read::Request const & request,
-    Read::Response & response,
-    bool timedOut) override
+    Read::Response & response) override
   {
     (void)request;
-    response.success = !timedOut;
-    if (response.success) {
-      std::copy(std::next(packet.begin(), HEADER_SIZE), std::prev(packet.end(), CHECKSUM_SIZE),
-        std::back_inserter(response.data));
-    }
+    std::copy(std::next(packet.begin(), HEADER_SIZE), std::prev(packet.end(), CHECKSUM_SIZE),
+      std::back_inserter(response.data));
   }
 };
 

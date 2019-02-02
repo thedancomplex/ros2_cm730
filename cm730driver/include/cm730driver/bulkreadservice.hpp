@@ -57,27 +57,23 @@ public:
   void handlePacket(
     Packet const & packet,
     BulkRead::Request const & request,
-    BulkRead::Response & response,
-    bool timedOut) override
+    BulkRead::Response & response) override
   {
-    response.success = !timedOut;
-    if (response.success) {
-      auto dataCursor = packet.begin();
-      // Go through received message, 1 per requested device
-      for (auto i = 0u; i < request.read_requests.size() / 3; ++i) {
-        auto result = cm730driver_msgs::msg::RangeReadResult{};
-        // Get device for which result is, and how much data was sent
-        // TODO: check this si the same as requested
-        result.device_id = *(dataCursor + ADDR_ID);
-        auto length = *(dataCursor + ADDR_LENGTH) - ERROR_SIZE - CHECKSUM_SIZE;
-        // Copy response data
-        std::advance(dataCursor, ADDR_DATA);
-        std::copy(dataCursor, std::next(dataCursor, length), std::back_inserter(result.data));
-        // Add to total result
-        response.results.push_back(result);
-        // Advance to next message
-        std::advance(dataCursor, length + CHECKSUM_SIZE);
-      }
+    auto dataCursor = packet.begin();
+    // Go through received message, 1 per requested device
+    for (auto i = 0u; i < request.read_requests.size() / 3; ++i) {
+      auto result = cm730driver_msgs::msg::RangeReadResult{};
+      // Get device for which result is, and how much data was sent
+      // TODO: check this si the same as requested
+      result.device_id = *(dataCursor + ADDR_ID);
+      auto length = *(dataCursor + ADDR_LENGTH) - ERROR_SIZE - CHECKSUM_SIZE;
+      // Copy response data
+      std::advance(dataCursor, ADDR_DATA);
+      std::copy(dataCursor, std::next(dataCursor, length), std::back_inserter(result.data));
+      // Add to total result
+      response.results.push_back(result);
+      // Advance to next message
+      std::advance(dataCursor, length + CHECKSUM_SIZE);
     }
   }
 };

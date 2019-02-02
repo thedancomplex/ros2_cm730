@@ -52,7 +52,7 @@ namespace cm730controller
     writeClient_->async_send_request(
       powerOnRequest,
       [=](WriteClient::SharedFuture response) {
-        if (!response.get()->success) {
+        if (response.get()->error != 0) {
           RCLCPP_ERROR(get_logger(), "Failed powering on DXL bus");
         } else {
           readStaticInfo();
@@ -177,7 +177,7 @@ namespace cm730controller
 
   void Cm730Controller::handleDynamicInfo(BulkReadClient::SharedFuture response)
   {
-    if (!response.get()->success) {
+    if (response.get()->error != 0) {
       RCLCPP_ERROR(get_logger(), "Bulk read failed!");
       return;
     }
@@ -270,7 +270,7 @@ namespace cm730controller
       // -1 becuase to first byte in the data is the device id, so real data starts at 1
       auto dataStartAddr = MX28Table(uint8_t(startAddr) - 1);
       
-      for (auto i = 0; i < mx28Command->device_id.size(); ++i) {
+      for (auto i = 0u; i < mx28Command->device_id.size(); ++i) {
         DataUtil::setByte(mx28Command->device_id[i], dataIter, 0, 0);
         if (MX28Table::TORQUE_ENABLE >= startAddr && MX28Table::TORQUE_ENABLE <= endAddr)
           DataUtil::setByte(mx28Command->torque[i] ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE, dataStartAddr);
@@ -289,7 +289,7 @@ namespace cm730controller
       syncWriteClient_->async_send_request(
         syncWriteRequest,
         [this](SyncWriteClient::SharedFuture response) {
-          RCLCPP_INFO(get_logger(), "Command write finished, success: " + std::to_string(response.get()->success));
+          RCLCPP_INFO(get_logger(), "Command write finished, error: " + std::to_string(response.get()->error));
         });
     }
   }
