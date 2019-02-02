@@ -173,11 +173,9 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
     auto n = mDevice->read(rxPacket.data() + nRead, rxPacket.size() - nRead);
     if (n > 0) {
       // A positive amount of bytes is good
-      // TODO: handle negative, which indicates an error
       nRead += n;
 
       // Log what we've read so far
-      // TODO: use debug level
       {
         auto str = std::ostringstream{};
         str << "Total read: " << nRead << " - ";
