@@ -16,14 +16,8 @@
 namespace cm730driver
 {
   class Cm730Device;
-  
-  /**CM730 Service base class
-   *
-   * Provides standard methods for any service that transmits and
-   * receives messages to and from a CM730.
-   */
-  template<uint8_t INSTR, class ServiceT, class Derived>
-  class Cm730Service
+
+  class Cm730ServiceBase
   {
   public:
     static constexpr uint8_t HEADER_SIZE = 5;
@@ -39,11 +33,32 @@ namespace cm730driver
       ADDR_DATA = 5        // For RX packe
     };
 
-    Cm730Service(std::shared_ptr<Cm730Device> device, std::shared_ptr<rclcpp::Clock> clock);
-    
-    /// Fixed size packet data
+    /// Packet data
     using Packet = std::vector<uint8_t>;
 
+    /// Prepare packet header data
+    static Packet initPacket(size_t size, uint8_t deviceId, uint8_t instruction);
+
+    /// Set checksum of a prepared packet
+    static void setChecksum(Packet& packet);
+
+    /// Calculate checksum of a prepared packet
+    static uint8_t calcChecksum(Packet const& packet);
+
+    
+  };
+  
+  /**CM730 Service base class
+   *
+   * Provides standard methods for any service that transmits and
+   * receives messages to and from a CM730.
+   */
+  template<uint8_t INSTR, class ServiceT, class Derived>
+  class Cm730Service : public Cm730ServiceBase
+  {
+  public:
+    Cm730Service(std::shared_ptr<Cm730Device> device, std::shared_ptr<rclcpp::Clock> clock);
+    
     void handle(std::shared_ptr<typename ServiceT::Request> request,
                 std::shared_ptr<typename ServiceT::Response> response);
     
@@ -86,16 +101,10 @@ namespace cm730driver
       rclcpp::Node& node, std::string const& serviceName,
       std::shared_ptr<Cm730Device> device, std::shared_ptr<rclcpp::Clock> clock);
 
-  private:
     /// Prepare packet header data
-    Packet initPacket(size_t size, uint8_t deviceId) const;
+    static Packet initPacket(size_t size, uint8_t deviceId);
 
-    /// Set checksum of a prepared packet
-    void setChecksum(Packet& packet) const;
-
-    /// Calculate checksum of a prepared packet
-    uint8_t calcChecksum(Packet const& packet) const;
-
+  private:
     std::shared_ptr<Cm730Device> mDevice;
     std::shared_ptr<rclcpp::Clock> mClock;
 };
@@ -185,24 +194,27 @@ namespace cm730driver
   }
   
   template<uint8_t INSTR, class ServiceT, class Derived>
-  typename Cm730Service<INSTR, ServiceT, Derived>::Packet Cm730Service<INSTR, ServiceT, Derived>::initPacket(size_t size, uint8_t deviceId) const
+  typename Cm730Service<INSTR, ServiceT, Derived>::Packet Cm730Service<INSTR, ServiceT, Derived>::initPacket(size_t size, uint8_t deviceId)
+  {
+    return Cm730ServiceBase::initPacket(size, deviceId, INSTR);
+  }
+
+  Cm730ServiceBase::Packet Cm730ServiceBase::initPacket(size_t size, uint8_t deviceId, uint8_t instruction)
   {
     auto data = Packet(size);
     data[0] = data[1] = 0xFF;
     data[ADDR_ID] = deviceId;
     data[ADDR_LENGTH] = size - (uint8_t)ADDR_INSTRUCTION;    
-    data[ADDR_INSTRUCTION] = INSTR;
+    data[ADDR_INSTRUCTION] = instruction;
     return data;
   }
 
-  template<uint8_t INSTR, class ServiceT, class Derived>
-  void Cm730Service<INSTR, ServiceT, Derived>::setChecksum(Packet& data) const
+  void Cm730ServiceBase::setChecksum(Packet& data)
   {
     *std::prev(data.end(), 1) = calcChecksum(data);
   }
 
-  template<uint8_t INSTR, class ServiceT, class Derived>
-  uint8_t Cm730Service<INSTR, ServiceT, Derived>::calcChecksum(Packet const& data) const
+  uint8_t Cm730ServiceBase::calcChecksum(Packet const& data)
   {
     auto sum = std::accumulate(std::next(data.begin(), 2), std::prev(data.end(), 1), 0u);
     return ~sum;
