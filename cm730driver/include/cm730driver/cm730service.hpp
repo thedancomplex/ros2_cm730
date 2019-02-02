@@ -132,7 +132,7 @@ namespace cm730driver
     {
       auto str = std::ostringstream{};
       str << "Writing: ";
-      for (auto i = 0; i < txPacket.size(); ++i)
+      for (auto i = 0u; i < txPacket.size(); ++i)
         str << int{txPacket[i]} << " ";
       RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
     }
@@ -169,7 +169,7 @@ namespace cm730driver
         {
           auto str = std::ostringstream{};
           str << "Total read: " << nRead << " - ";
-          for (auto i = 0; i < nRead; ++i)
+          for (auto i = 0u; i < nRead; ++i)
             str << int{rxPacket[i]} << " ";
           RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
         }
