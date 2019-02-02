@@ -46,7 +46,8 @@ public:
   /// Calculate checksum of a prepared packet
   static uint8_t calcChecksum(Packet const & packet);
 
-
+  /// Check whether the checsum of a packet is correct
+  static bool checkChecksum(Packet const & packet);
 };
 
 /**CM730 Service base class
@@ -224,6 +225,11 @@ uint8_t Cm730ServiceBase::calcChecksum(Packet const & data)
 {
   auto sum = std::accumulate(std::next(data.begin(), 2), std::prev(data.end(), 1), 0u);
   return ~sum;
+}
+
+bool Cm730ServiceBase::checkChecksum(const Packet & packet)
+{
+  return packet.back() == calcChecksum(packet);
 }
 
 template<uint8_t INSTR, class ServiceT, class Derived>

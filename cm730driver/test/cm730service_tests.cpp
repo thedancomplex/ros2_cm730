@@ -28,5 +28,21 @@ TEST(Cm730ServiceTests, calcCheckSum) {
   ASSERT_EQ(52, Cm730ServiceBase::calcChecksum(packet));
   Cm730ServiceBase::setChecksum(packet);
   ASSERT_EQ(52, packet[5]);
+  // Having checksum set should not matter
   ASSERT_EQ(52, Cm730ServiceBase::calcChecksum(packet));
+}
+
+TEST(Cm730ServiceTests, checkChecksum) {
+  auto packet = Cm730ServiceBase::Packet{
+    0xFF,
+    0xFF,
+    200,
+    2,
+    1,
+    0,
+  };
+
+  ASSERT_FALSE(Cm730ServiceBase::checkChecksum(packet));
+  Cm730ServiceBase::setChecksum(packet);
+  ASSERT_TRUE(Cm730ServiceBase::checkChecksum(packet));
 }
