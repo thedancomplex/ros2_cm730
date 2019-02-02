@@ -14,3 +14,19 @@ TEST(Cm730ServiceTests, initPacket) {
   ASSERT_EQ(6, packet[3]);
   ASSERT_EQ(2, packet[4]);
 }
+
+TEST(Cm730ServiceTests, calcCheckSum) {
+  auto packet = Cm730ServiceBase::Packet{
+    0xFF,
+    0xFF,
+    200,
+    2,
+    1,
+    0,
+  };
+
+  ASSERT_EQ(52, Cm730ServiceBase::calcChecksum(packet));
+  Cm730ServiceBase::setChecksum(packet);
+  ASSERT_EQ(52, packet[5]);
+  ASSERT_EQ(52, Cm730ServiceBase::calcChecksum(packet));
+}
