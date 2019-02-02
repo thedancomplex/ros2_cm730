@@ -9,11 +9,16 @@
 namespace cm730driver
 {
 
-class BulkReadService : public Cm730Service<BULK_READ_INSTR, cm730driver_msgs::srv::BulkRead,
-    BulkReadService>
+class BulkReadService : public Cm730Service<
+    BULK_READ_INSTR,
+    cm730driver_msgs::srv::BulkRead,
+    BulkReadService,
+    false
+>
 {
 public:
-  using Base = Cm730Service<BULK_READ_INSTR, cm730driver_msgs::srv::BulkRead, BulkReadService>;
+  using Base = Cm730Service<BULK_READ_INSTR, cm730driver_msgs::srv::BulkRead, BulkReadService,
+      false>;
   using BulkRead = cm730driver_msgs::srv::BulkRead;
 
   using Base::Base;

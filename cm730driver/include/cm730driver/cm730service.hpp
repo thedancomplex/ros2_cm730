@@ -68,7 +68,7 @@ public:
  * Provides standard methods for any service that transmits and
  * receives messages to and from a CM730.
  */
-template<uint8_t INSTR, class ServiceT, class Derived>
+template<uint8_t INSTR, class ServiceT, class Derived, bool CHECK_CHECKSUM = true>
 class Cm730Service : public Cm730ServiceBase
 {
 public:
@@ -126,16 +126,16 @@ private:
 };
 
 
-template<uint8_t INSTR, class ServiceT, class Derived>
-Cm730Service<INSTR, ServiceT, Derived>::Cm730Service(
+template<uint8_t INSTR, class ServiceT, class Derived, bool CHECK_CHECKSUM>
+Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::Cm730Service(
   std::shared_ptr<Cm730Device> device,
   std::shared_ptr<rclcpp::Clock> clock)
 : mDevice{std::move(device)},
   mClock{std::move(clock)}
 {}
 
-template<uint8_t INSTR, class ServiceT, class Derived>
-void Cm730Service<INSTR, ServiceT, Derived>::handle(
+template<uint8_t INSTR, class ServiceT, class Derived, bool CHECK_CHECKSUM>
+void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
   std::shared_ptr<typename ServiceT::Request> request,
   std::shared_ptr<typename ServiceT::Response> response)
 {
@@ -212,7 +212,7 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
   response->header.stamp = now;
 
   // Check checksum
-  if (!checkChecksum(rxPacket)) {
+  if (CHECK_CHECKSUM && !checkChecksum(rxPacket)) {
     auto str = std::ostringstream{};
     str << "Corrupt packet, invalid checksum: " << nRead << " - ";
     for (auto i = 0u; i < nRead; ++i) {
@@ -235,9 +235,10 @@ void Cm730Service<INSTR, ServiceT, Derived>::handle(
   handlePacket(rxPacket, *request, *response);
 }
 
-template<uint8_t INSTR, class ServiceT, class Derived>
-typename Cm730Service<INSTR, ServiceT, Derived>::Packet Cm730Service<INSTR, ServiceT,
-  Derived>::initPacket(size_t size, uint8_t deviceId)
+template<uint8_t INSTR, class ServiceT, class Derived, bool CHECK_CHECKSUM>
+typename Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::Packet Cm730Service<INSTR,
+  ServiceT,
+  Derived, CHECK_CHECKSUM>::initPacket(size_t size, uint8_t deviceId)
 {
   return Cm730ServiceBase::initPacket(size, deviceId, INSTR);
 }
@@ -270,9 +271,9 @@ bool Cm730ServiceBase::checkChecksum(const Packet & packet)
   return packet.back() == calcChecksum(packet);
 }
 
-template<uint8_t INSTR, class ServiceT, class Derived>
+template<uint8_t INSTR, class ServiceT, class Derived, bool CHECK_CHECKSUM>
 std::tuple<std::shared_ptr<Derived>, typename rclcpp::Service<ServiceT>::SharedPtr>
-Cm730Service<INSTR, ServiceT, Derived>::create(
+Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::create(
   rclcpp::Node & node, std::string const & serviceName,
   std::shared_ptr<Cm730Device> device, std::shared_ptr<rclcpp::Clock> clock)
 {
