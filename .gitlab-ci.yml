@@ -1,0 +1,21 @@
+image: ubuntu:bionic
+
+# setting up ros2
+before_script:
+  - export DEBIAN_FRONTEND=noninteractive
+  - apt update -qq && apt install --no-install-recommends -y locales
+  - locale-gen en_GB en_GB.UTF-8
+  - export LANG=en_GB.UTF-8
+  - apt update -qq && apt install --no-install-recommends -y curl  gnupg2 lsb-release
+  # add key
+  - curl --silent http://repo.ros2.org/repos.key | apt-key add -
+  # add repos to source list
+  - echo "deb [arch=amd64,arm64] http://packages.ros.org/ros2/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list
+  - apt update && apt install --no-install-recommends -y ros-crystal-desktop && apt install --no-install-recommends -y ros-crystal-ros-base
+  # source the environment
+  - source /opt/ros/crystal/local_setup.bash 
+  
+build:
+  stage: build
+  script:
+  - colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug
