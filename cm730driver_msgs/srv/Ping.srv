@@ -1,4 +1,4 @@
 uint8 device_id
 ---
 std_msgs/Header header
-bool success
+uint16 error

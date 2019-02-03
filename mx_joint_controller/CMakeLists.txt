@@ -65,14 +65,23 @@ install(TARGETS mx_joint_controller_node
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
   find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # remove the line when a copyright and license is present in all source files
   set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # remove the line when this package is a git repo
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  ament_add_gtest(${PROJECT_NAME}_mx_joint_controller_tests test/mx_joint_controller_tests.cpp)
+  if(TARGET ${PROJECT_NAME}_mx_joint_controller_tests)
+    target_include_directories(${PROJECT_NAME}_mx_joint_controller_tests PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include>)
+    ament_target_dependencies(${PROJECT_NAME}_mx_joint_controller_tests
+      "rclcpp"
+      "sensor_msgs"
+      "cm730controller_msgs"
+      "mx_joint_controller_msgs")
+  endif()
 endif()
 
 ament_export_dependencies(

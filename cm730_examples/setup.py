@@ -8,7 +8,8 @@ setup(
     packages=[],
     py_modules=[
         'head_zero',
-        'torque_off'
+        'torque_off',
+        'ping_motors'
     ],
     data_files=[],
     install_requires=['setuptools'],
@@ -19,7 +20,8 @@ setup(
     entry_points={
         'console_scripts': [
             'head_zero = head_zero:main',
-            'torque_off = torque_off:main'
+            'torque_off = torque_off:main',
+            'ping_motors = ping_motors:main'
         ],
     },
 )

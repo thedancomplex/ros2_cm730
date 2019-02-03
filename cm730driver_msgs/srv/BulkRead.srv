@@ -6,5 +6,5 @@
 uint8[] read_requests
 ---
 std_msgs/Header header
-bool success
+uint16 error
 RangeReadResult[] results

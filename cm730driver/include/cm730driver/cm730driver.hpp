@@ -13,39 +13,39 @@
 namespace cm730driver
 {
 
-  class Cm730Device;
-  class PingService;
-  class ReadService;
-  class WriteService;
-  class BulkReadService;
-  class SyncWriteService;
-  
-  class Cm730Driver : public rclcpp::Node
-  {
-  public:
-    Cm730Driver();
-    
-    virtual ~Cm730Driver();
+class Cm730Device;
+class PingService;
+class ReadService;
+class WriteService;
+class BulkReadService;
+class SyncWriteService;
 
-  private:
-    std::shared_ptr<Cm730Device> mDevice;
+class Cm730Driver : public rclcpp::Node
+{
+public:
+  Cm730Driver();
 
-    std::tuple<std::shared_ptr<PingService>,
-               rclcpp::Service<cm730driver_msgs::srv::Ping>::SharedPtr> mPingServer;
+  virtual ~Cm730Driver();
 
-    std::tuple<std::shared_ptr<ReadService>,
-               rclcpp::Service<cm730driver_msgs::srv::Read>::SharedPtr> mReadServer;
+private:
+  std::shared_ptr<Cm730Device> mDevice;
 
-    std::tuple<std::shared_ptr<WriteService>,
-               rclcpp::Service<cm730driver_msgs::srv::Write>::SharedPtr> mWriteServer;
+  std::tuple<std::shared_ptr<PingService>,
+    rclcpp::Service<cm730driver_msgs::srv::Ping>::SharedPtr> mPingServer;
 
-    std::tuple<std::shared_ptr<BulkReadService>,
-               rclcpp::Service<cm730driver_msgs::srv::BulkRead>::SharedPtr> mBulkReadServer;
+  std::tuple<std::shared_ptr<ReadService>,
+    rclcpp::Service<cm730driver_msgs::srv::Read>::SharedPtr> mReadServer;
 
-    std::tuple<std::shared_ptr<SyncWriteService>,
-               rclcpp::Service<cm730driver_msgs::srv::SyncWrite>::SharedPtr> mSyncWriteServer;
-  };
-  
+  std::tuple<std::shared_ptr<WriteService>,
+    rclcpp::Service<cm730driver_msgs::srv::Write>::SharedPtr> mWriteServer;
+
+  std::tuple<std::shared_ptr<BulkReadService>,
+    rclcpp::Service<cm730driver_msgs::srv::BulkRead>::SharedPtr> mBulkReadServer;
+
+  std::tuple<std::shared_ptr<SyncWriteService>,
+    rclcpp::Service<cm730driver_msgs::srv::SyncWrite>::SharedPtr> mSyncWriteServer;
+};
+
 }  // namespace cm730driver
 
 #endif  // CM730DRIVER__CM730DRIVER_HPP_
