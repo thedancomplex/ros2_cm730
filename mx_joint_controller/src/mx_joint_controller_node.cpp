@@ -8,7 +8,7 @@ int main(int argc, char ** argv)
   auto node = std::make_shared<mx_joint_controller::MxJointController>();
   rclcpp::spin(node);
   rclcpp::shutdown();
-  node=nullptr;
+  node = nullptr;
 
   return 0;
 }

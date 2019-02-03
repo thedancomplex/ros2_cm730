@@ -3,129 +3,129 @@
 namespace mx_joint_controller
 {
 
-  MxJointController::MxJointController()
-    : rclcpp::Node{"mx_joint_controller"}
-  {
-    auto jointNames = std::vector<std::string>{};
-    get_parameter_or("joint_names", jointNames, {
-        "base",
-        "shoulder-pitch-r",
-        "shoulder-pitch-l",
-        "shoulder-roll-r",
-        "shoulder-roll-l",
-        "elbow-r",
-        "elbow-l",
+MxJointController::MxJointController()
+: rclcpp::Node{"mx_joint_controller"}
+{
+  auto jointNames = std::vector<std::string>{};
+  get_parameter_or("joint_names", jointNames, {
+      "base",
+      "shoulder-pitch-r",
+      "shoulder-pitch-l",
+      "shoulder-roll-r",
+      "shoulder-roll-l",
+      "elbow-r",
+      "elbow-l",
 
-        "hip-yaw-r",
-        "hip-yaw-l",
-        "hip-roll-r",
-        "hip-roll-l",
-        "hip-pitch-r",
-        "hip-pitch-l",
-        "knee-r",
-        "knee-l",
-        "ankle-pitch-r",
-        "ankle-pitch-l",
-        "ankle-roll-r",
-        "ankle-roll-l",
+      "hip-yaw-r",
+      "hip-yaw-l",
+      "hip-roll-r",
+      "hip-roll-l",
+      "hip-pitch-r",
+      "hip-pitch-l",
+      "knee-r",
+      "knee-l",
+      "ankle-pitch-r",
+      "ankle-pitch-l",
+      "ankle-roll-r",
+      "ankle-roll-l",
 
-        "head-pan",
-        "head-tilt",
-      });
+      "head-pan",
+      "head-tilt",
+    });
 
-    mx28CommandPub_ = create_publisher<MX28Command>("/cm730/mx28command");
-    jointStatePub_ = create_publisher<JointState>("/joint_states");
-    
-    mx28InfoSub_ = create_subscription<MX28InfoArray>(
-      "/cm730/mx28info",
-      [=](MX28InfoArray::SharedPtr info) {
-        auto jointStateMsg = std::make_shared<JointState>();
-        for (auto const& mx : info->mx28s) {
-          jointStateMsg->name.push_back(jointNames[mx.stat.id]);
-          jointStateMsg->position.push_back(value2Rads(mx.dyna.present_position));
-        }
-        jointStatePub_->publish(jointStateMsg);
-      });
+  mx28CommandPub_ = create_publisher<MX28Command>("/cm730/mx28command");
+  jointStatePub_ = create_publisher<JointState>("/joint_states");
 
-    jointCommandSub_ = create_subscription<JointCommand>(
-      "/cm730/joint_commands",
-      [=](JointCommand::SharedPtr cmdFuture) {
-        auto const&  cmd = *cmdFuture.get();
-        auto mx28Command = MX28Command{};
-        // Transform all names to IDs
-        std::transform(
-          cmd.name.begin(), cmd.name.end(),
-          std::back_inserter(mx28Command.device_id),
-          [&](std::string const& name) -> int {
-            auto iter = std::find(jointNames.begin(), jointNames.end(), name);
-            if (iter == jointNames.end()) {
-              RCLCPP_ERROR(get_logger(), "Unknown joint: " + name);
-              return -1;
-            }
-            return std::distance(jointNames.begin(), iter);
-          });
+  mx28InfoSub_ = create_subscription<MX28InfoArray>(
+    "/cm730/mx28info",
+    [ = ](MX28InfoArray::SharedPtr info) {
+      auto jointStateMsg = std::make_shared<JointState>();
+      for (auto const & mx : info->mx28s) {
+        jointStateMsg->name.push_back(jointNames[mx.stat.id]);
+        jointStateMsg->position.push_back(value2Rads(mx.dyna.present_position));
+      }
+      jointStatePub_->publish(jointStateMsg);
+    });
 
-        // Enable all torques and turn off all LEDs. TODO: keep track
-        // of torque and only turn on if needed, so we don't need to
-        // send everything every time 
-        mx28Command.torque.resize(mx28Command.device_id.size());
-        std::fill(mx28Command.torque.begin(), mx28Command.torque.end(), 1);
+  jointCommandSub_ = create_subscription<JointCommand>(
+    "/cm730/joint_commands",
+    [ = ](JointCommand::SharedPtr cmdFuture) {
+      auto const & cmd = *cmdFuture.get();
+      auto mx28Command = MX28Command{};
+      // Transform all names to IDs
+      std::transform(
+        cmd.name.begin(), cmd.name.end(),
+        std::back_inserter(mx28Command.device_id),
+        [&](std::string const & name) -> int {
+          auto iter = std::find(jointNames.begin(), jointNames.end(), name);
+          if (iter == jointNames.end()) {
+            RCLCPP_ERROR(get_logger(), "Unknown joint: " + name);
+            return -1;
+          }
+          return std::distance(jointNames.begin(), iter);
+        });
 
-        mx28Command.led.resize(mx28Command.device_id.size());
-        std::fill(mx28Command.led.begin(), mx28Command.led.end(), 0);
+      // Enable all torques and turn off all LEDs. TODO: keep track
+      // of torque and only turn on if needed, so we don't need to
+      // send everything every time
+      mx28Command.torque.resize(mx28Command.device_id.size());
+      std::fill(mx28Command.torque.begin(), mx28Command.torque.end(), 1);
 
-        // Turn angles in radians to raw values
-        std::transform(
-          cmd.position.begin(), cmd.position.end(),
-          std::back_inserter(mx28Command.goal_position),
-          [=](float angle) -> uint16_t {
-            return rads2Value(angle);
-          });
+      mx28Command.led.resize(mx28Command.device_id.size());
+      std::fill(mx28Command.led.begin(), mx28Command.led.end(), 0);
 
-        // Turn PID parameters to raw values
-        // Transformations from: http://support.robotis.com/en/product/actuator/dynamixel/mx_series/mx-28at_ar.htm#Actuator_Address_1A
-        std::transform(
-          cmd.p_gain.begin(), cmd.p_gain.end(),
-          std::back_inserter(mx28Command.p_gain),
-          [=](float value) -> uint8_t {
-            auto v = unsigned(value * 8);
-            if (v > 254) {
-              RCLCPP_WARN(get_logger(), "P gain too high: " + std::to_string(value));
-              v = 254;
-            }
-            return v;
-          });
+      // Turn angles in radians to raw values
+      std::transform(
+        cmd.position.begin(), cmd.position.end(),
+        std::back_inserter(mx28Command.goal_position),
+        [ = ](float angle) -> uint16_t {
+          return rads2Value(angle);
+        });
 
-        std::transform(
-          cmd.i_gain.begin(), cmd.i_gain.end(),
-          std::back_inserter(mx28Command.i_gain),
-          [=](float value) -> uint8_t {
-            auto v = unsigned(value * 2048 / 1000);
-            if (v > 254) {
-              RCLCPP_WARN(get_logger(), "I gain too high: " + std::to_string(value));
-              v = 254;
-            }
-            return v;
-          });
+      // Turn PID parameters to raw values
+      // Transformations from: http://support.robotis.com/en/product/actuator/dynamixel/mx_series/mx-28at_ar.htm#Actuator_Address_1A
+      std::transform(
+        cmd.p_gain.begin(), cmd.p_gain.end(),
+        std::back_inserter(mx28Command.p_gain),
+        [ = ](float value) -> uint8_t {
+          auto v = unsigned(value * 8);
+          if (v > 254) {
+            RCLCPP_WARN(get_logger(), "P gain too high: " + std::to_string(value));
+            v = 254;
+          }
+          return v;
+        });
 
-        std::transform(
-          cmd.d_gain.begin(), cmd.d_gain.end(),
-          std::back_inserter(mx28Command.d_gain),
-          [=](float value) -> uint8_t {
-            auto v = unsigned(value * 1000 / 4);
-            if (v > 254) {
-              RCLCPP_WARN(get_logger(), "D gain too high: " + std::to_string(value));
-              v = 254;
-            }
-            return v;
-          });
+      std::transform(
+        cmd.i_gain.begin(), cmd.i_gain.end(),
+        std::back_inserter(mx28Command.i_gain),
+        [ = ](float value) -> uint8_t {
+          auto v = unsigned(value * 2048 / 1000);
+          if (v > 254) {
+            RCLCPP_WARN(get_logger(), "I gain too high: " + std::to_string(value));
+            v = 254;
+          }
+          return v;
+        });
 
-        mx28CommandPub_->publish(mx28Command);
-      });
-  }
-  
-  MxJointController::~MxJointController()
-  {
-  }
+      std::transform(
+        cmd.d_gain.begin(), cmd.d_gain.end(),
+        std::back_inserter(mx28Command.d_gain),
+        [ = ](float value) -> uint8_t {
+          auto v = unsigned(value * 1000 / 4);
+          if (v > 254) {
+            RCLCPP_WARN(get_logger(), "D gain too high: " + std::to_string(value));
+            v = 254;
+          }
+          return v;
+        });
+
+      mx28CommandPub_->publish(mx28Command);
+    });
+}
+
+MxJointController::~MxJointController()
+{
+}
 
 }  // namespace mx_joint_controller
