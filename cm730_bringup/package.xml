@@ -3,9 +3,12 @@
 <package format="2">
   <name>cm730_bringup</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>
+    Launch files and composed nodes to orchestrate CM-730 related
+    nodes.
+  </description>
   <maintainer email="sgvandijk@gmail.com">sander</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
 
