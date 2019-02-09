@@ -230,6 +230,7 @@ namespace cm730controller
       DataUtil::getByte(cm730Result.data, CM730Table::VOLTAGE, CM730Table::DXL_POWER);
     
     auto cm730Info = std::make_shared<CM730Info>();
+    cm730Info->header.stamp = response.get()->header.stamp;
     cm730Info->stat = *staticCm730Info_;
     cm730Info->dyna = *dynamicCm730Info;    
     cm730InfoPub_->publish(cm730Info);
@@ -253,6 +254,7 @@ namespace cm730controller
       mx28Info->dyna = *dynamicMx28Info;
       mx28Infos->mx28s.push_back(*mx28Info);
     }
+    mx28Infos->header.stamp = response.get()->header.stamp;
     mx28InfoPub_->publish(mx28Infos);
 
     writeCommands();
