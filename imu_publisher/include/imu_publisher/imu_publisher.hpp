@@ -18,9 +18,8 @@
 #include "imu_publisher/imu_publisher.hpp"
 
 #include <rclcpp/rclcpp.hpp>
-#include <cm730controller_msgs/msg/mx28_info_array.hpp>
-#include <cm730controller_msgs/msg/mx28_command.hpp>
-#include <sensor_msgs/msg/joint_state.hpp>
+#include <cm730controller_msgs/msg/cm730_info.hpp>
+#include <sensor_msgs/msg/imu.hpp>
 #include <cmath>
 
 namespace imu_publisher
@@ -34,6 +33,8 @@ public:
   virtual ~IMUPublisher();
 
 private:
+
+  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imuStatePub_;
 
 };
 

@@ -20,6 +20,7 @@ namespace imu_publisher
 IMUPublisher::IMUPublisher()
 : rclcpp::Node{"imu_publisher"}
 {
+    imuStatePub_ = create_publisher<sensor_msgs::msg::Imu>("/Imu");
 }
 
 IMUPublisher::~IMUPublisher()
