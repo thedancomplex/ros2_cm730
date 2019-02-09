@@ -27,6 +27,15 @@ IMUPublisher::IMUPublisher()
         [ = ](cm730controller_msgs::msg::CM730Info::SharedPtr info) {
           auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
 
+          // 0: x | 1: y | 2: z
+          imuStateMsg->linear_acceleration.x = info.get()->dyna.accel.at(0);
+          imuStateMsg->linear_acceleration.y = info.get()->dyna.accel.at(1);
+          imuStateMsg->linear_acceleration.z = info.get()->dyna.accel.at(2);
+
+          imuStateMsg->angular_velocity.x = info.get()->dyna.gyro.at(0);
+          imuStateMsg->angular_velocity.y = info.get()->dyna.gyro.at(1);
+          imuStateMsg->angular_velocity.z = info.get()->dyna.gyro.at(2);
+
           imuStateMsg->header = info.get()->header;
           imuStatePub_->publish(imuStateMsg);
         });
