@@ -17,6 +17,7 @@ setup(
     maintainer_email='sgvandijk@gmail.com',
     keywords=['ROS'],
     description='Examples using the CM730-controller',
+    license='Apache License, Version 2.0',
     entry_points={
         'console_scripts': [
             'head_zero = head_zero:main',

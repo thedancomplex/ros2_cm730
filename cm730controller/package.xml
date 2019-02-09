@@ -3,9 +3,12 @@
 <package format="2">
   <name>cm730controller</name>
   <version>0.1.0</version>
-  <description>TODO: Package description</description>
+  <description>
+    Controller implementing read-write loop, transforming CM-730
+    driver service calls into structured messages.
+  </description>
   <maintainer email="sgvandijk@gmail.com">Sander G. van Dijk</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache License 2.0</license>
 
   <author>Sander G. van Dijk</author>
 

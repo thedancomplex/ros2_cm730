@@ -2,10 +2,10 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mx_joint_controller_msgs</name>
-  <description>Custom messages for controller MX motors.</description>
+  <description>Custom messages for controlling MX motors.</description>
   <version>0.1.0</version>
   <maintainer email="sgvandijk@gmail.com">Sander G. van Dijk</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache License 2.0</license>
 
   <author>Sander G. van Dijk</author>
 
