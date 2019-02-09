@@ -3,9 +3,12 @@
 <package format="2">
   <name>mx_joint_controller</name>
   <version>0.1.0</version>
-  <description>Controls MX servo joints joints and publishes their states, using the cm730controller</description>
+  <description>
+    Controls MX servo joints joints and publishes their states, using
+    the cm730controller.
+  </description>
   <maintainer email="sgvandijk@gmail.com">Sander G. van Dijk</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache License 2.0</license>
 
   <author>Sander G. van Dijk</author>
 

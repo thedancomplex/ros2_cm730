@@ -3,11 +3,11 @@
 <package format="3">
   <name>cm730controller_msgs</name>
   <version>0.1.0</version>
-  <description>Custom messages for dynamixel's cm730 board.</description>
+  <description>Custom messages for the CM-730 controller.</description>
 
   <maintainer email="find@mms.ai">Marcus M. Scheunemann</maintainer>
 
-  <license>TODO: License declaration</license>
+  <license>Apache License 2.0</license>
 
   <author>Marcus M. Scheunemann</author>
   <author>Sander G. van Dijk</author>

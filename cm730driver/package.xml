@@ -3,9 +3,13 @@
 <package format="2">
   <name>cm730driver</name>
   <version>0.1.0</version>
-  <description>TODO: Package description</description>
+  <description>
+    Driver node that communicates with the CM-730 subcontroller and
+    exposes a service that maps the Dynamixel serial protocol ro ROS 2
+    services.
+  </description>
   <maintainer email="sgvandijk@gmail.com">Sander G. van Dijk</maintainer>
-  <license>TODO: License declaration</license>
+  <license>Apache License 2.0</license>
 
   <author>Sander G. van Dijk</author>
 
