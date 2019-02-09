@@ -14,6 +14,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(std_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/CM730EepromTable.msg"
@@ -24,7 +25,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MX28Info.msg"
   "msg/MX28InfoArray.msg"
   "msg/MX28Command.msg"
-  DEPENDENCIES builtin_interfaces
+  DEPENDENCIES builtin_interfaces std_msgs
 )
 
 ament_package()
