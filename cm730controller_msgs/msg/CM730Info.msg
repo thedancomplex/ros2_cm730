@@ -1,3 +1,5 @@
+std_msgs/Header header
+
 # Static data only read once on startup
 CM730EepromTable stat
 

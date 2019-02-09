@@ -58,6 +58,7 @@ MxJointController::MxJointController()
         jointStateMsg->name.push_back(jointNames[mx.stat.id]);
         jointStateMsg->position.push_back(value2Rads(mx.dyna.present_position));
       }
+      jointStateMsg->header = info.get()->header;
       jointStatePub_->publish(jointStateMsg);
     });
 
