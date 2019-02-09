@@ -28,21 +28,52 @@ IMUPublisher::IMUPublisher()
           auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
 
           // 0: x | 1: y | 2: z
-          imuStateMsg->linear_acceleration.x = info.get()->dyna.accel.at(0);
-          imuStateMsg->linear_acceleration.y = info.get()->dyna.accel.at(1);
-          imuStateMsg->linear_acceleration.z = info.get()->dyna.accel.at(2);
+          imuStateMsg->linear_acceleration.x = gyroValueToRPS(info.get()->dyna.accel.at(0));
+          imuStateMsg->linear_acceleration.y = gyroValueToRPS(info.get()->dyna.accel.at(1));
+          imuStateMsg->linear_acceleration.z = gyroValueToRPS(info.get()->dyna.accel.at(2));
 
-          imuStateMsg->angular_velocity.x = info.get()->dyna.gyro.at(0);
-          imuStateMsg->angular_velocity.y = info.get()->dyna.gyro.at(1);
-          imuStateMsg->angular_velocity.z = info.get()->dyna.gyro.at(2);
+          imuStateMsg->angular_velocity.x = accelToMS2(info.get()->dyna.gyro.at(0));
+          imuStateMsg->angular_velocity.y = accelToMS2(info.get()->dyna.gyro.at(1));
+          imuStateMsg->angular_velocity.z = accelToMS2(info.get()->dyna.gyro.at(2));
 
           imuStateMsg->header = info.get()->header;
           imuStatePub_->publish(imuStateMsg);
         });
+
 }
 
 IMUPublisher::~IMUPublisher()
 {
+}
+
+double IMUPublisher::accelToMS2(int value) {
+
+  // Milli Gs per digit
+  static auto accelMgsPerDigit = 8.0;
+  // Max measurable Gs
+  static auto accelGRange = 4.0;
+  // Range raw value
+  static auto accelDigitalRange = 1024;
+
+  auto gs = (int{value} - accelDigitalRange / 2) * accelMgsPerDigit / 1000;
+  auto clampedGs = clamp(gs, -accelGRange, accelGRange);
+
+  return clampedGs * 9.80665;
+}
+
+double IMUPublisher::gyroValueToRPS(int value) {
+
+  // Milli degrees per second per digit
+  const auto gyroMdpsPerDigit = 448.0;
+  // Max measurable degrees per second
+  const auto gyroDpsRange = 200.0;
+  // Range raw value
+  const auto gyroDigitalRange = 1024;
+
+  auto degPerSec = (int{value} - gyroDigitalRange / 2) * gyroMdpsPerDigit / 1000;
+  auto clampedDegPerSec = clamp(degPerSec, -gyroDpsRange, gyroDpsRange);
+
+  return clampedDegPerSec / 180 * M_PI;
 }
 
 }  // namespace imu_publisher

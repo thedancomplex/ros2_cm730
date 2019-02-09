@@ -38,6 +38,15 @@ private:
 
   rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imuStatePub_;
 
+
+  inline auto clamp(double val, double min, double max) -> double {
+    return val < min ? min : val > max ? max : val;
+  };
+
+  double gyroValueToRPS(int value);
+  double accelToMS2(int value);
+
+
 };
 
 }  // namespace imu_publisher
