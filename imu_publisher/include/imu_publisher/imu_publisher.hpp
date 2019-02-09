@@ -34,6 +34,8 @@ public:
 
 private:
 
+  rclcpp::Subscription<cm730controller_msgs::msg::CM730Info>::SharedPtr cm730InfoSub_;
+
   rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imuStatePub_;
 
 };

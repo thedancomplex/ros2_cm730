@@ -21,6 +21,15 @@ IMUPublisher::IMUPublisher()
 : rclcpp::Node{"imu_publisher"}
 {
     imuStatePub_ = create_publisher<sensor_msgs::msg::Imu>("/Imu");
+
+    cm730InfoSub_ = create_subscription<cm730controller_msgs::msg::CM730Info>(
+        "/cm730/cm730info",
+        [ = ](cm730controller_msgs::msg::CM730Info::SharedPtr info) {
+          auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
+
+          imuStateMsg->header = info.get()->header;
+          imuStatePub_->publish(imuStateMsg);
+        });
 }
 
 IMUPublisher::~IMUPublisher()
