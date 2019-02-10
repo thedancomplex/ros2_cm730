@@ -28,13 +28,13 @@ IMUPublisher::IMUPublisher()
           auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
 
           // 0: x | 1: y | 2: z
-          imuStateMsg->linear_acceleration.x = -gyroValueToRPS(info.get()->dyna.accel.at(0));
-          imuStateMsg->linear_acceleration.y = -gyroValueToRPS(info.get()->dyna.accel.at(1));
-          imuStateMsg->linear_acceleration.z =  gyroValueToRPS(info.get()->dyna.accel.at(2));
+          imuStateMsg->linear_acceleration.x = -accelToMS2(info.get()->dyna.accel.at(0));
+          imuStateMsg->linear_acceleration.y = -accelToMS2(info.get()->dyna.accel.at(1));
+          imuStateMsg->linear_acceleration.z =  accelToMS2(info.get()->dyna.accel.at(2));
 
-          imuStateMsg->angular_velocity.x = -accelToMS2(info.get()->dyna.gyro.at(1));
-          imuStateMsg->angular_velocity.y =  accelToMS2(info.get()->dyna.gyro.at(0));
-          imuStateMsg->angular_velocity.z = -accelToMS2(info.get()->dyna.gyro.at(2));
+          imuStateMsg->angular_velocity.x = -gyroValueToRPS(info.get()->dyna.gyro.at(1));
+          imuStateMsg->angular_velocity.y =  gyroValueToRPS(info.get()->dyna.gyro.at(0));
+          imuStateMsg->angular_velocity.z = -gyroValueToRPS(info.get()->dyna.gyro.at(2));
 
           imuStateMsg->header = info.get()->header;
           imuStatePub_->publish(imuStateMsg);
