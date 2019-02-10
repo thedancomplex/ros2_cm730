@@ -21,6 +21,7 @@ find_package(rclcpp REQUIRED)
 find_package(cm730driver REQUIRED)
 find_package(cm730controller REQUIRED)
 find_package(mx_joint_controller REQUIRED)
+find_package(imu_publisher REQUIRED)
 
 add_executable(cm730_composed src/cm730_composed.cpp)
 target_include_directories(cm730_composed PUBLIC
@@ -30,7 +31,8 @@ ament_target_dependencies(cm730_composed
   "rclcpp"
   "cm730driver"
   "cm730controller"
-  "mx_joint_controller")
+  "mx_joint_controller"
+  "imu_publisher")
 
 install(TARGETS cm730_composed
   EXPORT export_${PROJECT_NAME}

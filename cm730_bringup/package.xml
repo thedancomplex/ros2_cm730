@@ -15,11 +15,13 @@
   <build_depend>cm730driver</build_depend>
   <build_depend>cm730controller</build_depend>
   <build_depend>mx_joint_controller</build_depend>
+  <build_depend>imu_publisher</build_depend>
 
   <exec_depend>launch</exec_depend>
   <exec_depend>cm730driver</exec_depend>
   <exec_depend>cm730controller</exec_depend>
   <exec_depend>mx_joint_controller</exec_depend>
+  <exec_depend>imu_publisher</exec_depend>
   
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

@@ -26,5 +26,7 @@ def generate_launch_description():
         Node(package='cm730controller', node_executable='cm730controller_node',
              output='screen'),
         Node(package='mx_joint_controller', node_executable='mx_joint_controller_node',
+             output='screen'),
+	Node(package='imu_publisher', node_executable='imu_publisher_node',
              output='screen')
 ])
