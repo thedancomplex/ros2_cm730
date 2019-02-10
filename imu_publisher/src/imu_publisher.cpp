@@ -20,7 +20,7 @@ namespace imu_publisher
 IMUPublisher::IMUPublisher()
 : rclcpp::Node{"imu_publisher"}
 {
-    imuStatePub_ = create_publisher<sensor_msgs::msg::Imu>("/Imu");
+    imuStatePub_ = create_publisher<sensor_msgs::msg::Imu>("/imu/data_raw");
 
     cm730InfoSub_ = create_subscription<cm730controller_msgs::msg::CM730Info>(
         "/cm730/cm730info",
