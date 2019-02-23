@@ -80,23 +80,6 @@ MxJointController::MxJointController()
           return std::distance(jointNames.begin(), iter);
         });
 
-      // Enable all torques and turn off all LEDs. TODO: keep track
-      // of torque and only turn on if needed, so we don't need to
-      // send everything every time
-      mx28Command.torque.resize(mx28Command.device_id.size());
-      std::fill(mx28Command.torque.begin(), mx28Command.torque.end(), 1);
-
-      mx28Command.led.resize(mx28Command.device_id.size());
-      std::fill(mx28Command.led.begin(), mx28Command.led.end(), 0);
-
-      // Turn angles in radians to raw values
-      std::transform(
-        cmd.position.begin(), cmd.position.end(),
-        std::back_inserter(mx28Command.goal_position),
-        [ = ](float angle) -> uint16_t {
-          return rads2Value(angle);
-        });
-
       // Turn PID parameters to raw values
       // Transformations from: http://support.robotis.com/en/product/actuator/dynamixel/mx_series/mx-28at_ar.htm#Actuator_Address_1A
       std::transform(
@@ -133,6 +116,14 @@ MxJointController::MxJointController()
             v = 254;
           }
           return v;
+        });
+
+      // Turn angles in radians to raw values
+      std::transform(
+        cmd.position.begin(), cmd.position.end(),
+        std::back_inserter(mx28Command.goal_position),
+        [ = ](float angle) -> uint16_t {
+          return rads2Value(angle);
         });
 
       mx28CommandPub_->publish(mx28Command);
