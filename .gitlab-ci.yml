@@ -1,9 +1,11 @@
 image: osrf/ros:crystal-desktop
+
+before_script:
+  - pip3 install -U pytest colcon-common-extensions
   
 build:
   stage: build
   script:
-    - pip3 install -U pytest colcon-common-extensions
     - colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug
   artifacts:
     paths:
