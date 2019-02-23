@@ -16,8 +16,10 @@
 #include <cm730controller/cm730controller.hpp>
 #include <mx_joint_controller/mx_joint_controller.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <memory>
 
-int main(int argc, char* argv[]) {
+int main(int argc, char * argv[])
+{
   rclcpp::init(argc, argv);
 
   rclcpp::executors::MultiThreadedExecutor exec{};
@@ -31,7 +33,7 @@ int main(int argc, char* argv[]) {
   exec.add_node(jointControllerNode);
 
   exec.spin();
-  
+
   rclcpp::shutdown();
   cmy730DriverNode = nullptr;
   cm730ControllerNode = nullptr;
