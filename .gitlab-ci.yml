@@ -1,24 +1,26 @@
-image: ubuntu:bionic
+image: osrf/ros:crystal-desktop
 
-# setting up ros2
 before_script:
-  - export DEBIAN_FRONTEND=noninteractive
-  - apt update -qq && apt install --no-install-recommends -y locales
-  - locale-gen en_GB en_GB.UTF-8
-  - export LANG=en_GB.UTF-8
-  - apt update -qq && apt install --no-install-recommends -y curl  gnupg2 lsb-release
-  # add key
-  - curl --silent http://repo.ros2.org/repos.key | apt-key add -
-  # add repos to source list
-  - echo "deb [arch=amd64,arm64] http://packages.ros.org/ros2/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list
-  - apt update && apt install --no-install-recommends -y ros-crystal-desktop && apt install --no-install-recommends -y ros-crystal-ros-base
-  # install development tools
-  - apt update -qq && apt install --no-install-recommends -y build-essential cmake git python3-colcon-common-extensions python3-pip python-rosdep python3-vcstool wget
-  - python3 -m pip install -U argcomplete flake8 flake8-blind-except flake8-builtins flake8-class-newline flake8-comprehensions flake8-deprecated flake8-docstrings flake8-import-order flake8-quotes git+https://github.com/lark-parser/lark.git@0.7d pytest-repeat pytest-rerunfailures pytest pytest-cov pytest-runner setuptools
-  # source the environment
-  - source /opt/ros/crystal/local_setup.bash 
+  - pip3 install -U pytest colcon-common-extensions
   
 build:
   stage: build
   script:
-  - colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug
+    - colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug
+  artifacts:
+    paths:
+      - build/
+      - install/
+    expire_in: 10 mins
+
+test:
+  stage: test
+  script:
+  - colcon test --event-handlers console_cohesion+ --return-code-on-test-failure
+  artifacts:
+    reports:
+      junit:
+      - build/cm730_bringup/test_results/cm730_bringup/*.xunit.xml
+      - build/cm730driver/test_results/cm730driver/*.xunit.xml
+      - build/cm730controller/test_results/cm730controller/*.xunit.xml
+      - build/mx_joint_controller/test_results/mx_joint_controller/*.xunit.xml

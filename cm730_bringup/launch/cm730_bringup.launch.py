@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
@@ -25,8 +22,10 @@ def generate_launch_description():
              output='screen'),
         Node(package='cm730controller', node_executable='cm730controller_node',
              output='screen'),
-        Node(package='mx_joint_controller', node_executable='mx_joint_controller_node',
+        Node(package='mx_joint_controller',
+             node_executable='mx_joint_controller_node',
              output='screen'),
-	Node(package='imu_publisher', node_executable='imu_publisher_node',
+        Node(package='imu_publisher',
+             node_executable='imu_publisher_node',
              output='screen')
-])
+    ])
