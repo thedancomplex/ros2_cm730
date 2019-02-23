@@ -3,6 +3,7 @@ image: osrf/ros:crystal-desktop
 build:
   stage: build
   script:
+  - pip3 install -U pytest colcon-common-extensions
   - colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug
   - colcon test --event-handlers console_cohesion+ --return-code-on-test-failure
   artifacts:
