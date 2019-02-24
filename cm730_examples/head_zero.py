@@ -24,9 +24,6 @@ def main(args=None):
 
     msg = JointCommand(
         name=["head-pan", "head-tilt"],
-        p_gain=[4.0, 4.0],
-        i_gain=[0.0, 0.0],
-        d_gain=[0.0, 0.0],
         position=[0.0, 0.0]
     )
 
