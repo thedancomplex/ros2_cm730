@@ -15,6 +15,7 @@
 #include <cm730driver/cm730driver.hpp>
 #include <cm730controller/cm730controller.hpp>
 #include <mx_joint_controller/mx_joint_controller.hpp>
+#include <imu_publisher/imu_publisher.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <memory>
 
@@ -27,10 +28,12 @@ int main(int argc, char * argv[])
   auto cmy730DriverNode = std::make_shared<cm730driver::Cm730Driver>();
   auto cm730ControllerNode = std::make_shared<cm730controller::Cm730Controller>();
   auto jointControllerNode = std::make_shared<mx_joint_controller::MxJointController>();
+  auto imuPublisherNode = std::make_shared<imu_publisher::IMUPublisher>();
 
   exec.add_node(cmy730DriverNode);
   exec.add_node(cm730ControllerNode);
   exec.add_node(jointControllerNode);
+  exec.add_node(imuPublisherNode);
 
   exec.spin();
 
@@ -38,6 +41,7 @@ int main(int argc, char * argv[])
   cmy730DriverNode = nullptr;
   cm730ControllerNode = nullptr;
   jointControllerNode = nullptr;
+  imuPublisherNode = nullptr;
 
   return 0;
 }
