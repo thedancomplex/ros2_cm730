@@ -28,9 +28,7 @@ IMUPublisher::IMUPublisher()
           auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
 
           // CM-730 coordinate systems (axes pointing in positiv direction)
-          // accelerometer: x right, y forward, z up (right-handed)
-          // gyrometer:     z up, x backward, y left (right-handed)
-
+          // accelerometer: x right, y forward,  z up (right-handed)
           // ros2: x forward, y left, z up (right-handed)
           // (more http://www.ros.org/reps/rep-0103.html#coordinate-frame-conventions)
 
@@ -39,10 +37,12 @@ IMUPublisher::IMUPublisher()
           imuStateMsg->linear_acceleration.y = -accelToMS2(info.get()->dyna.accel.at(0)); // x
           imuStateMsg->linear_acceleration.z =  accelToMS2(info.get()->dyna.accel.at(2)); // z
 
+          // from cm730
+          // x/y counterclockwise, z clockwise
           // gyro
           imuStateMsg->angular_velocity.x = -gyroValueToRPS(info.get()->dyna.gyro.at(0)); // x
-          imuStateMsg->angular_velocity.y =  gyroValueToRPS(info.get()->dyna.gyro.at(1)); // y
-          imuStateMsg->angular_velocity.z = -gyroValueToRPS(info.get()->dyna.gyro.at(2)); // z
+          imuStateMsg->angular_velocity.y = -gyroValueToRPS(info.get()->dyna.gyro.at(1)); // y
+          imuStateMsg->angular_velocity.z =  gyroValueToRPS(info.get()->dyna.gyro.at(2)); // z
 
           imuStateMsg->header = info.get()->header;
           imuStatePub_->publish(imuStateMsg);
