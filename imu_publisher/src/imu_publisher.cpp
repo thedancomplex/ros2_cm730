@@ -29,21 +29,20 @@ IMUPublisher::IMUPublisher()
 
           // CM-730 coordinate systems
           // accelerometer: z down, y backward, x left (right-handed)
-          // gyrometer:     z up, y right, x forward (left-handed)
-          // (more: http://emanual.robotis.com/docs/en/platform/op/references/)
+          // gyrometer:     z up,   x backward, y left (right-handed)
 
           // ros2: z up, y left, x forward (right-handed)
           // (more http://www.ros.org/reps/rep-0103.html#coordinate-frame-conventions)
 
           // accelerometer
-          imuStateMsg->linear_acceleration.x = -accelToMS2(info.get()->dyna.accel.at(1)); // y
+          imuStateMsg->linear_acceleration.x =  accelToMS2(info.get()->dyna.accel.at(1)); // y
           imuStateMsg->linear_acceleration.y =  accelToMS2(info.get()->dyna.accel.at(0)); // x
           imuStateMsg->linear_acceleration.z = -accelToMS2(info.get()->dyna.accel.at(2)); // z
 
           // gyro
-          imuStateMsg->angular_velocity.x =  gyroValueToRPS(info.get()->dyna.gyro.at(0)); // x
-          imuStateMsg->angular_velocity.y = -gyroValueToRPS(info.get()->dyna.gyro.at(1)); // y
-          imuStateMsg->angular_velocity.z =  gyroValueToRPS(info.get()->dyna.gyro.at(2)); // z
+          imuStateMsg->angular_velocity.x = -gyroValueToRPS(info.get()->dyna.gyro.at(0)); // x
+          imuStateMsg->angular_velocity.y =  gyroValueToRPS(info.get()->dyna.gyro.at(1)); // y
+          imuStateMsg->angular_velocity.z = -gyroValueToRPS(info.get()->dyna.gyro.at(2)); // z
 
           imuStateMsg->header = info.get()->header;
           imuStatePub_->publish(imuStateMsg);
