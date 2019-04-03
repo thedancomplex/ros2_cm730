@@ -27,10 +27,18 @@ IMUPublisher::IMUPublisher()
         [ = ](cm730controller_msgs::msg::CM730Info::SharedPtr info) {
           auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
 
-          // 0: x | 1: y | 2: z
-          imuStateMsg->linear_acceleration.x = -accelToMS2(info.get()->dyna.accel.at(0));
-          imuStateMsg->linear_acceleration.y = -accelToMS2(info.get()->dyna.accel.at(1));
-          imuStateMsg->linear_acceleration.z =  accelToMS2(info.get()->dyna.accel.at(2));
+          // CM-730 coordinate systems for Gyro / Accel
+          // accelerometer: left-handed
+          // gyrometer:
+          // (more: http://emanual.robotis.com/docs/en/platform/op/references/)
+
+          // ros2: right-handed
+          // (more http://www.ros.org/reps/rep-0103.html#coordinate-frame-conventions)
+
+          // accelerometer is left-handed
+          imuStateMsg->linear_acceleration.x = -accelToMS2(info.get()->dyna.accel.at(0)); // x
+          imuStateMsg->linear_acceleration.y = -accelToMS2(info.get()->dyna.accel.at(1)); // y
+          imuStateMsg->linear_acceleration.z =  accelToMS2(info.get()->dyna.accel.at(2)); // z
 
           imuStateMsg->angular_velocity.x = -gyroValueToRPS(info.get()->dyna.gyro.at(1));
           imuStateMsg->angular_velocity.y =  gyroValueToRPS(info.get()->dyna.gyro.at(0));
