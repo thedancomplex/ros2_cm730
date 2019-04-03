@@ -63,3 +63,7 @@ Provides a higher level interface to servo motors than
 into standard ROS 2 `sensor_msgs/JointState` (topic: `/joint_states`)
 messages, to be used for instance by ROS 2's `robot_state_publisher`
 node.
+
+### `imu_publisher`
+
+Reads the values of the accelerometer and the gyrometer of the CM-730 and publishes them as an IMU standard message as topic `/imu/data_raw`.
