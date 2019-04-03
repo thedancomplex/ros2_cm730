@@ -28,7 +28,7 @@ IMUPublisher::IMUPublisher()
           auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
 
           // CM-730 coordinate systems
-          // accelerometer: z down, y forward, x left (right-handed)
+          // accelerometer: z down, y backward, x left (right-handed)
           // gyrometer:     z up, y right, x forward (left-handed)
           // (more: http://emanual.robotis.com/docs/en/platform/op/references/)
 
@@ -36,7 +36,7 @@ IMUPublisher::IMUPublisher()
           // (more http://www.ros.org/reps/rep-0103.html#coordinate-frame-conventions)
 
           // accelerometer
-          imuStateMsg->linear_acceleration.x =  accelToMS2(info.get()->dyna.accel.at(1)); // y
+          imuStateMsg->linear_acceleration.x = -accelToMS2(info.get()->dyna.accel.at(1)); // y
           imuStateMsg->linear_acceleration.y =  accelToMS2(info.get()->dyna.accel.at(0)); // x
           imuStateMsg->linear_acceleration.z = -accelToMS2(info.get()->dyna.accel.at(2)); // z
 
