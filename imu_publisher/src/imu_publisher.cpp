@@ -44,6 +44,11 @@ IMUPublisher::IMUPublisher()
           imuStateMsg->angular_velocity.y = -gyroValueToRPS(info.get()->dyna.gyro.at(1)); // y
           imuStateMsg->angular_velocity.z =  gyroValueToRPS(info.get()->dyna.gyro.at(2)); // z
 
+          // orientation estimate is unknown at this stage
+          // set element at 0 to -1
+          // https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Imu.msg
+          imuStateMsg->orientation_covariance.at(0) = -1;
+
           imuStateMsg->header = info.get()->header;
           imuStatePub_->publish(imuStateMsg);
         });
