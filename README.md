@@ -15,7 +15,7 @@ tested.
 The following diagram shows the different components of the suite and
 their interactions:
 
-![CM-730 ROS 2 diagram](https://robocuplab.herts.ac.uk/ros2/cm730driver/raw/master/cm730ros2diagram.svg)
+![CM-730 ROS 2 diagram](https://gitlab.com/boldhearts/ros2_cm730/raw/master/cm730ros2diagram.svg)
 
 ## Bring Up
 
