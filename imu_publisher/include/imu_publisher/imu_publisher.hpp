@@ -33,20 +33,18 @@ public:
   virtual ~IMUPublisher();
 
 private:
+  rclcpp::Subscription<cm730controller_msgs::msg::CM730Info>::SharedPtr sub_;
 
-  rclcpp::Subscription<cm730controller_msgs::msg::CM730Info>::SharedPtr cm730InfoSub_;
-
-  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imuStatePub_;
+  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr pub_;
 
 
-  inline auto clamp(double val, double min, double max) -> double {
-    return val < min ? min : val > max ? max : val;
-  };
+  inline auto clamp(double val, double min, double max)->double
+  {
+    return val<min ? min : val> max ? max : val;
+  }
 
   double gyroValueToRPS(int value);
   double accelToMS2(int value);
-
-
 };
 
 }  // namespace imu_publisher
