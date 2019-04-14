@@ -14,53 +14,54 @@
 
 #include "imu_publisher/imu_publisher.hpp"
 
+#include <memory>
+
 namespace imu_publisher
 {
 
 IMUPublisher::IMUPublisher()
 : rclcpp::Node{"imu_publisher"}
 {
-    imuStatePub_ = create_publisher<sensor_msgs::msg::Imu>("/imu/data_raw");
+  imuStatePub_ = create_publisher<sensor_msgs::msg::Imu>("/imu/data_raw");
 
-    cm730InfoSub_ = create_subscription<cm730controller_msgs::msg::CM730Info>(
-        "/cm730/cm730info",
-        [ = ](cm730controller_msgs::msg::CM730Info::SharedPtr info) {
-          auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
+  cm730InfoSub_ = create_subscription<cm730controller_msgs::msg::CM730Info>(
+    "/cm730/cm730info",
+    [ = ](cm730controller_msgs::msg::CM730Info::SharedPtr info) {
+      auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
 
-          // CM-730 coordinate systems (axes pointing in positiv direction)
-          // accelerometer: x right, y forward,  z up (right-handed)
-          // ros2: x forward, y left, z up (right-handed)
-          // (more http://www.ros.org/reps/rep-0103.html#coordinate-frame-conventions)
+      // CM-730 coordinate systems (axes pointing in positiv direction)
+      // accelerometer: x right, y forward,  z up (right-handed)
+      // ros2: x forward, y left, z up (right-handed)
+      // (more http://www.ros.org/reps/rep-0103.html#coordinate-frame-conventions)
 
-          // accelerometer
-          imuStateMsg->linear_acceleration.x =  accelToMS2(info.get()->dyna.accel.at(1)); // y
-          imuStateMsg->linear_acceleration.y = -accelToMS2(info.get()->dyna.accel.at(0)); // x
-          imuStateMsg->linear_acceleration.z =  accelToMS2(info.get()->dyna.accel.at(2)); // z
+      // accelerometer
+      imuStateMsg->linear_acceleration.x = accelToMS2(info.get()->dyna.accel.at(1));      // y
+      imuStateMsg->linear_acceleration.y = -accelToMS2(info.get()->dyna.accel.at(0));     // x
+      imuStateMsg->linear_acceleration.z = accelToMS2(info.get()->dyna.accel.at(2));      // z
 
-          // from cm730
-          // x/y counterclockwise, z clockwise
-          // gyro
-          imuStateMsg->angular_velocity.x = -gyroValueToRPS(info.get()->dyna.gyro.at(0)); // x
-          imuStateMsg->angular_velocity.y = -gyroValueToRPS(info.get()->dyna.gyro.at(1)); // y
-          imuStateMsg->angular_velocity.z =  gyroValueToRPS(info.get()->dyna.gyro.at(2)); // z
+      // from cm730
+      // x/y counterclockwise, z clockwise
+      // gyro
+      imuStateMsg->angular_velocity.x = -gyroValueToRPS(info.get()->dyna.gyro.at(0));     // x
+      imuStateMsg->angular_velocity.y = -gyroValueToRPS(info.get()->dyna.gyro.at(1));     // y
+      imuStateMsg->angular_velocity.z = gyroValueToRPS(info.get()->dyna.gyro.at(2));      // z
 
-          // orientation estimate is unknown at this stage
-          // set element at 0 to -1
-          // https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Imu.msg
-          imuStateMsg->orientation_covariance.at(0) = -1;
+      // orientation estimate is unknown at this stage
+      // set element at 0 to -1
+      // https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Imu.msg
+      imuStateMsg->orientation_covariance.at(0) = -1;
 
-          imuStateMsg->header = info.get()->header;
-          imuStatePub_->publish(imuStateMsg);
-        });
-
+      imuStateMsg->header = info.get()->header;
+      imuStatePub_->publish(imuStateMsg);
+    });
 }
 
 IMUPublisher::~IMUPublisher()
 {
 }
 
-double IMUPublisher::accelToMS2(int value) {
-
+double IMUPublisher::accelToMS2(int value)
+{
   // Milli Gs per digit
   static auto accelMgsPerDigit = 8.0;
   // Max measurable Gs
@@ -74,8 +75,8 @@ double IMUPublisher::accelToMS2(int value) {
   return clampedGs * 9.80665;
 }
 
-double IMUPublisher::gyroValueToRPS(int value) {
-
+double IMUPublisher::gyroValueToRPS(int value)
+{
   // Milli degrees per second per digit
   const auto gyroMdpsPerDigit = 448.0;
   // Max measurable degrees per second

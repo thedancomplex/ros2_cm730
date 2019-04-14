@@ -15,6 +15,8 @@
 #include "imu_publisher/imu_publisher.hpp"
 #include <cstdio>
 
+#include <memory>
+
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
