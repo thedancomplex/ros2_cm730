@@ -33,9 +33,9 @@ public:
   virtual ~IMUPublisher();
 
 private:
-  rclcpp::Subscription<cm730controller_msgs::msg::CM730Info>::SharedPtr cm730InfoSub_;
+  rclcpp::Subscription<cm730controller_msgs::msg::CM730Info>::SharedPtr sub_;
 
-  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imuStatePub_;
+  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr pub_;
 
 
   inline auto clamp(double val, double min, double max)->double
