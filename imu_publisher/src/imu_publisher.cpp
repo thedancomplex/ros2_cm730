@@ -14,6 +14,7 @@
 
 #include "imu_publisher/imu_publisher.hpp"
 
+#include <string>
 #include <memory>
 
 namespace imu_publisher
@@ -22,12 +23,16 @@ namespace imu_publisher
 IMUPublisher::IMUPublisher()
 : rclcpp::Node{"imu_publisher"}
 {
+  get_parameter_or_set("imu_frame", imu_frame_, std::string("base_link"));
+
   pub_ = create_publisher<sensor_msgs::msg::Imu>("/imu/data_raw");
 
   sub_ = create_subscription<cm730controller_msgs::msg::CM730Info>(
     "/cm730/cm730info",
     [ = ](cm730controller_msgs::msg::CM730Info::SharedPtr info) {
       auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
+
+      imuStateMsg->header.frame_id = imu_frame_;
 
       // CM-730 coordinate systems (axes pointing in positiv direction)
       // accelerometer: x right, y forward,  z up (right-handed)
