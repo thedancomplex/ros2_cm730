@@ -23,7 +23,7 @@ namespace imu_publisher
 IMUPublisher::IMUPublisher()
 : rclcpp::Node{"imu_publisher"}
 {
-  get_parameter_or_set("imu_frame", imu_frame_, std::string("base_link"));
+  get_parameter_or("imu_frame", imu_frame_, std::string("base_link"));
 
   pub_ = create_publisher<sensor_msgs::msg::Imu>("/imu/data_raw");
 
