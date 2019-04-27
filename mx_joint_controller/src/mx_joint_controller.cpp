@@ -64,12 +64,11 @@ MxJointController::MxJointController()
 
   jointCommandSub_ = create_subscription<JointCommand>(
     "/cm730/joint_commands",
-    [ = ](JointCommand::SharedPtr cmdFuture) {
-      auto const & cmd = *cmdFuture.get();
+    [ = ](JointCommand::SharedPtr cmd) {
       auto mx28Command = MX28Command{};
       // Transform all names to IDs
       std::transform(
-        cmd.name.begin(), cmd.name.end(),
+        cmd->name.begin(), cmd->name.end(),
         std::back_inserter(mx28Command.device_id),
         [&](std::string const & name) -> int {
           auto iter = std::find(jointNames.begin(), jointNames.end(), name);
@@ -83,7 +82,7 @@ MxJointController::MxJointController()
       // Turn PID parameters to raw values
       // Transformations from: http://support.robotis.com/en/product/actuator/dynamixel/mx_series/mx-28at_ar.htm#Actuator_Address_1A
       std::transform(
-        cmd.p_gain.begin(), cmd.p_gain.end(),
+        cmd->p_gain.begin(), cmd->p_gain.end(),
         std::back_inserter(mx28Command.p_gain),
         [ = ](float value) -> uint8_t {
           auto v = unsigned(value * 8);
@@ -95,7 +94,7 @@ MxJointController::MxJointController()
         });
 
       std::transform(
-        cmd.i_gain.begin(), cmd.i_gain.end(),
+        cmd->i_gain.begin(), cmd->i_gain.end(),
         std::back_inserter(mx28Command.i_gain),
         [ = ](float value) -> uint8_t {
           auto v = unsigned(value * 2048 / 1000);
@@ -107,7 +106,7 @@ MxJointController::MxJointController()
         });
 
       std::transform(
-        cmd.d_gain.begin(), cmd.d_gain.end(),
+        cmd->d_gain.begin(), cmd->d_gain.end(),
         std::back_inserter(mx28Command.d_gain),
         [ = ](float value) -> uint8_t {
           auto v = unsigned(value * 1000 / 4);
@@ -120,7 +119,7 @@ MxJointController::MxJointController()
 
       // Turn angles in radians to raw values
       std::transform(
-        cmd.position.begin(), cmd.position.end(),
+        cmd->position.begin(), cmd->position.end(),
         std::back_inserter(mx28Command.goal_position),
         [ = ](float angle) -> uint16_t {
           return rads2Value(angle);
