@@ -32,14 +32,15 @@ Cm730Controller::Cm730Controller()
 
   mx28CommandSub_ = create_subscription<MX28Command>(
     "/cm730/mx28command",
+    10,
     [this](MX28Command::SharedPtr cmd) {
       RCLCPP_INFO(get_logger(), "Received MX28 command");
       std::lock_guard<std::mutex> lock{mx28CommandMutex_};
       mx28Command_ = cmd;
     });
 
-  cm730InfoPub_ = create_publisher<CM730Info>("/cm730/cm730info");
-  mx28InfoPub_ = create_publisher<MX28InfoArray>("/cm730/mx28info");
+  cm730InfoPub_ = create_publisher<CM730Info>("/cm730/cm730info", 10);
+  mx28InfoPub_ = create_publisher<MX28InfoArray>("/cm730/mx28info", 10);
 
   while (!writeClient_->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
