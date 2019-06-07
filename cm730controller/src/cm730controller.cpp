@@ -234,13 +234,13 @@ void Cm730Controller::handleDynamicInfo(BulkReadClient::SharedFuture response)
   dynamicCm730Info->voltage =
     DataUtil::getByte(cm730Result.data, CM730Table::VOLTAGE, CM730Table::DXL_POWER);
 
-  auto cm730Info = std::make_shared<CM730Info>();
+  auto cm730Info = std::make_unique<CM730Info>();
   cm730Info->header.stamp = response.get()->header.stamp;
   cm730Info->stat = *staticCm730Info_;
   cm730Info->dyna = *dynamicCm730Info;
-  cm730InfoPub_->publish(cm730Info);
+  cm730InfoPub_->publish(std::move(cm730Info));
 
-  auto mx28Infos = std::make_shared<MX28InfoArray>();
+  auto mx28Infos = std::make_unique<MX28InfoArray>();
   for (auto i = 1; i <= 20; ++i) {
     auto mx28Result = response.get()->results[i];
     auto dynamicMx28Info = std::make_shared<MX28RamTable>();
@@ -262,7 +262,7 @@ void Cm730Controller::handleDynamicInfo(BulkReadClient::SharedFuture response)
     mx28Infos->mx28s.push_back(*mx28Info);
   }
   mx28Infos->header.stamp = response.get()->header.stamp;
-  mx28InfoPub_->publish(mx28Infos);
+  mx28InfoPub_->publish(std::move(mx28Infos));
 
   writeCommands();
 }
