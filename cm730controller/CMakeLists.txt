@@ -34,6 +34,8 @@ ament_target_dependencies(cm730controller
   "cm730driver_msgs"
   "cm730controller_msgs")
 
+target_compile_options(cm730controller PRIVATE -Werror)
+
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
 target_compile_definitions(cm730controller PRIVATE "CM730CONTROLLER_BUILDING_LIBRARY")
@@ -55,6 +57,7 @@ target_include_directories(cm730controller_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_link_libraries(cm730controller_node cm730controller)
+target_compile_options(cm730controller_node PRIVATE -Werror)
 
 install(TARGETS cm730controller_node
   EXPORT export_${PROJECT_NAME}
