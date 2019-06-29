@@ -20,7 +20,7 @@ def main(args=None):
     rclpy.init(args=args)
 
     node = rclpy.create_node('torque_off_publisher')
-    publisher = node.create_publisher(MX28Command, '/cm730/mx28command')
+    publisher = node.create_publisher(MX28Command, '/cm730/mx28command', 10)
 
     msg = MX28Command(
         device_id=list(range(1, 21)),

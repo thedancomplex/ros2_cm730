@@ -20,7 +20,7 @@ def main(args=None):
     rclpy.init(args=args)
 
     node = rclpy.create_node('head_zero_publisher')
-    publisher = node.create_publisher(JointCommand, '/cm730/joint_commands')
+    publisher = node.create_publisher(JointCommand, '/cm730/joint_commands', 10)
 
     msg = JointCommand(
         name=["head-pan", "head-tilt"],
