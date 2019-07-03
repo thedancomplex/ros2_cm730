@@ -193,10 +193,14 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
   while (nRead < rxPacket.size()) {
     // Check if we have timed out and give up
     auto readingTime = mClock->now() - readStartTime;
-    if (readingTime.nanoseconds() / 1e6 > 12) {
-      RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), "Timed out");
+    auto delta_ms = readingTime.nanoseconds() / 1e6;
+    if (delta_ms > 15) {
+      RCLCPP_ERROR(rclcpp::get_logger("cm730service"), "Timed out");
       response->error = ErrorFlag::TIMEOUT_ERROR;
       return;
+    }
+    else if (delta_ms > 12.5) {
+      RCLCPP_WARN(rclcpp::get_logger("cm730service"), "Read time exceeds 12.5ms");
     }
 
     // Read as many bytes as are available, up to how many are still missing
