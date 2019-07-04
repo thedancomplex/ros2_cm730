@@ -11,7 +11,8 @@
   <author>Sander G. van Dijk</author>
 
   <exec_depend>rclpy</exec_depend>
-  <exec_depend>cm730Controller_msgs</exec_depend>
+  <exec_depend>cm730controller_msgs</exec_depend>
+  <exec_depend>cm730driver_msgs</exec_depend>
   <exec_depend>mx_joint_controller_msgs</exec_depend>
 
   <!-- These test dependencies are optional
