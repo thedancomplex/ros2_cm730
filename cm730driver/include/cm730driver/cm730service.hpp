@@ -198,8 +198,7 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
       RCLCPP_ERROR(rclcpp::get_logger("cm730service"), "Timed out");
       response->error = ErrorFlag::TIMEOUT_ERROR;
       return;
-    }
-    else if (delta_ms > 12.5) {
+    } else if (delta_ms > 12.5) {
       RCLCPP_WARN(rclcpp::get_logger("cm730service"), "Read time exceeds 12.5ms");
     }
 
