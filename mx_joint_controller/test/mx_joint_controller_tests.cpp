@@ -16,7 +16,7 @@
 
 #include "mx_joint_controller/mx_joint_controller.hpp"
 
-using namespace mx_joint_controller;
+using mx_joint_controller::MxJointController;
 
 TEST(MxJointControllerTests, value2Rads) {
   ASSERT_EQ(0.0, MxJointController::value2Rads(0x800));
