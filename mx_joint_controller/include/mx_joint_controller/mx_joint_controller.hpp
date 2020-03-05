@@ -15,14 +15,15 @@
 #ifndef MX_JOINT_CONTROLLER__MX_JOINT_CONTROLLER_HPP_
 #define MX_JOINT_CONTROLLER__MX_JOINT_CONTROLLER_HPP_
 
-#include "mx_joint_controller/visibility_control.h"
-
 #include <rclcpp/rclcpp.hpp>
 #include <cm730controller_msgs/msg/mx28_info_array.hpp>
 #include <cm730controller_msgs/msg/mx28_command.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <mx_joint_controller_msgs/msg/joint_command.hpp>
+
 #include <cmath>
+
+#include "mx_joint_controller/visibility_control.h"
 
 namespace mx_joint_controller
 {
@@ -56,7 +57,6 @@ private:
 
   rclcpp::Publisher<JointState>::SharedPtr jointStatePub_;
   rclcpp::Subscription<JointCommand>::SharedPtr jointCommandSub_;
-
 };
 
 }  // namespace mx_joint_controller
