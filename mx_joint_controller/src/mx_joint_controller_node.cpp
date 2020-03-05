@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #include "mx_joint_controller/mx_joint_controller.hpp"
+
 #include <cstdio>
+#include <memory>
 
 int main(int argc, char ** argv)
 {

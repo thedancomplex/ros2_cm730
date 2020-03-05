@@ -14,6 +14,10 @@
 
 #include "mx_joint_controller/mx_joint_controller.hpp"
 
+#include <string>
+#include <vector>
+#include <memory>
+
 namespace mx_joint_controller
 {
 
