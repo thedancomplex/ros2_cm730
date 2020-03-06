@@ -14,15 +14,17 @@
 
 #include "cm730driver/cm730device.hpp"
 
-#include <cstdio>
+#include <rclcpp/logging.hpp>
+
 #include <unistd.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <linux/serial.h>
 #include <sys/ioctl.h>
 
+#include <cstdio>
 #include <stdexcept>
-#include <rclcpp/logging.hpp>
+
 
 using namespace cm730driver;
 

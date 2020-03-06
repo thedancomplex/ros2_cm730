@@ -15,7 +15,9 @@
 #ifndef CM730DRIVER__CM730SERVICE_HPP_
 #define CM730DRIVER__CM730SERVICE_HPP_
 
-#include "cm730driver/cm730device.hpp"
+#include <rclcpp/clock.hpp>
+#include <rclcpp/logging.hpp>
+#include <rclcpp/node.hpp>
 
 #include <array>
 #include <vector>
@@ -23,9 +25,7 @@
 #include <memory>
 #include <sstream>
 
-#include <rclcpp/clock.hpp>
-#include <rclcpp/logging.hpp>
-#include <rclcpp/node.hpp>
+#include "cm730driver/cm730device.hpp"
 
 namespace cm730driver
 {
