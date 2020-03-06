@@ -24,6 +24,9 @@
 #include <numeric>
 #include <memory>
 #include <sstream>
+#include <tuple>
+#include <string>
+#include <utility>
 
 #include "cm730driver/cm730device.hpp"
 

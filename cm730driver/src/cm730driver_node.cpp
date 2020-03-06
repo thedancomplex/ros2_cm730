@@ -14,6 +14,8 @@
 
 #include "cm730driver/cm730driver.hpp"
 
+#include <memory>
+
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);

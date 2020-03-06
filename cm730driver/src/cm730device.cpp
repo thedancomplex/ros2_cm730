@@ -24,7 +24,8 @@
 
 #include <cstdio>
 #include <stdexcept>
-
+#include <string>
+#include <utility>
 
 using namespace cm730driver;
 

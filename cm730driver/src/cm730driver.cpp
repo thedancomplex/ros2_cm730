@@ -14,7 +14,7 @@
 
 #include "cm730driver/cm730driver.hpp"
 
-#include <numeric>
+#include <memory>
 
 #include "cm730driver/cm730device.hpp"
 #include "cm730driver/pingservice.hpp"

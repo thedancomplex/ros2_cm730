@@ -15,6 +15,8 @@
 #ifndef CM730DRIVER__BULKREADSERVICE_HPP_
 #define CM730DRIVER__BULKREADSERVICE_HPP_
 
+#include <algorithm> 
+
 #include "cm730driver/cm730service.hpp"
 #include "cm730driver_msgs/srv/bulk_read.hpp"
 

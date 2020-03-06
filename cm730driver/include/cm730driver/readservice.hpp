@@ -15,6 +15,8 @@
 #ifndef CM730DRIVER__READSERVICE_HPP_
 #define CM730DRIVER__READSERVICE_HPP_
 
+#include <algorithm>
+
 #include "cm730driver/cm730service.hpp"
 #include "cm730driver_msgs/srv/read.hpp"
 

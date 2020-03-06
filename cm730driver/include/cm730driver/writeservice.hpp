@@ -15,6 +15,8 @@
 #ifndef CM730DRIVER__WRITESERVICE_HPP_
 #define CM730DRIVER__WRITESERVICE_HPP_
 
+#include <algorithm>
+
 #include "cm730driver/cm730service.hpp"
 #include "cm730driver_msgs/srv/write.hpp"
 
