@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #ifndef CM730DRIVER__SYNCWRITESERVICE_HPP_
-#define CM730DRIVER__BULKREADSERVICE_HPP_
+#define CM730DRIVER__SYNCWRITESERVICE_HPP_
 
 #include <algorithm>
 
@@ -71,4 +71,4 @@ public:
 };
 }  // namespace cm730driver
 
-#endif  // CM730DRIVER__SYNCWRITESERVICE_HPP
+#endif  // CM730DRIVER__SYNCWRITESERVICE_HPP_
