@@ -38,8 +38,8 @@ public:
 private:
   std::string mPath;
   int mDevice;
-
 };
+
 }
 
 #endif  // CM730DRIVER__CM730DEVICE_HPP_

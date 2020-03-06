@@ -39,7 +39,7 @@ void Cm730Device::open()
 {
   auto newtio = termios{};
   auto serinfo = serial_struct{};
-  double baudrate = 1000000.0; //bps (1Mbps)
+  double baudrate = 1000000.0;  // bps (1Mbps)
 
   // Make sure device is closed before trying to open it
   close();
