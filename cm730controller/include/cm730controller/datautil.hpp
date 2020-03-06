@@ -53,7 +53,6 @@ public:
     *std::next(dataIter, addr_) = value & 0xFF;
     *std::next(dataIter, addr_ + 1) = (value >> 8) & 0xFF;
   }
-
 };
 
 }  // namespace cm730controller
