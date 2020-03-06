@@ -25,7 +25,7 @@ namespace cm730driver
 class Cm730Device
 {
 public:
-  Cm730Device(std::string path);
+  explicit Cm730Device(std::string path);
 
   void open();
   void close();
