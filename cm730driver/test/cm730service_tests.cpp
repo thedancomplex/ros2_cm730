@@ -16,7 +16,7 @@
 
 #include "cm730driver/cm730service.hpp"
 
-using namespace cm730driver;
+using cm730driver::Cm730ServiceBase;
 
 TEST(Cm730ServiceTests, initPacket) {
   auto packet = Cm730ServiceBase::initPacket(10, 200, 2);

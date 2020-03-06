@@ -27,7 +27,7 @@
 #include <string>
 #include <utility>
 
-using namespace cm730driver;
+using cm730driver::Cm730Device;
 
 Cm730Device::Cm730Device(std::string path)
 : mPath{std::move(path)},
