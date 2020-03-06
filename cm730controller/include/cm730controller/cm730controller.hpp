@@ -15,6 +15,8 @@
 #ifndef CM730CONTROLLER__CM730CONTROLLER_HPP_
 #define CM730CONTROLLER__CM730CONTROLLER_HPP_
 
+#include <map>
+
 #include <rclcpp/rclcpp.hpp>
 #include <cm730driver_msgs/srv/write.hpp>
 #include <cm730driver_msgs/srv/bulk_read.hpp>

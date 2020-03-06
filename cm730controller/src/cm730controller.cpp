@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+#include <utility>
+
 #include "cm730controller/cm730controller.hpp"
 #include "cm730controller/cm730table.hpp"
 #include "cm730controller/mx28table.hpp"

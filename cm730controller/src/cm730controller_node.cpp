@@ -14,6 +14,8 @@
 
 #include "cm730controller/cm730controller.hpp"
 
+#include <memory>
+
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
