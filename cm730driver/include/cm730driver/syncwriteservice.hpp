@@ -69,6 +69,6 @@ public:
     (void)response;
   }
 };
-}
+}  // namespace cm730driver
 
-#endif
+#endif  // CM730DRIVER__SYNCWRITESERVICE_HPP

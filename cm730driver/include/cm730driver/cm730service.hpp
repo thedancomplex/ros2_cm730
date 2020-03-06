@@ -308,6 +308,6 @@ Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::create(
   return std::make_tuple(cm730Service, rclcppService);
 }
 
-}
+}  // namespace cm730driver
 
 #endif  // CM730DRIVER__CM730SERVICE_HPP_

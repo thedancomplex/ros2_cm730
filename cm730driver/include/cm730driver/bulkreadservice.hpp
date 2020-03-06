@@ -99,6 +99,6 @@ public:
   }
 };
 
-}
+}  // namespace cm730driver
 
 #endif  // CM730DRIVER__BULKREADSERVICE_HPP_

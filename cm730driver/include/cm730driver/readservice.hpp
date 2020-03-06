@@ -66,6 +66,6 @@ public:
   }
 };
 
-}
+}  // namespace cm730driver
 
 #endif  // CM730DRIVER__READSERVICE_HPP_

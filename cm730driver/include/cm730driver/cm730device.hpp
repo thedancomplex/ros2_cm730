@@ -40,6 +40,6 @@ private:
   int mDevice;
 };
 
-}
+}  // namespace cm730driver
 
 #endif  // CM730DRIVER__CM730DEVICE_HPP_
