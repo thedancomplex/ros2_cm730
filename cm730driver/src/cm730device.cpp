@@ -23,6 +23,7 @@
 #include <sys/ioctl.h>
 
 #include <cstdio>
+#include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -104,7 +105,7 @@ void Cm730Device::clear()
 int Cm730Device::write(uint8_t const * outPacket, size_t size)
 {
   auto i = ::write(mDevice, outPacket, size);
-  if (i < long(size)) {
+  if (i < int64_t(size)) {
     RCLCPP_ERROR(rclcpp::get_logger("cm730device"), "Failed writing complete message to CM730");
   } else if (i < 0) {
     RCLCPP_ERROR(rclcpp::get_logger("cm730device"), "Failed writing message to CM730");
