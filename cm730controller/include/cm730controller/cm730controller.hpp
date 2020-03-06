@@ -15,8 +15,6 @@
 #ifndef CM730CONTROLLER__CM730CONTROLLER_HPP_
 #define CM730CONTROLLER__CM730CONTROLLER_HPP_
 
-#include <map>
-
 #include <rclcpp/rclcpp.hpp>
 #include <cm730driver_msgs/srv/write.hpp>
 #include <cm730driver_msgs/srv/bulk_read.hpp>
@@ -24,6 +22,8 @@
 #include <cm730controller_msgs/msg/cm730_info.hpp>
 #include <cm730controller_msgs/msg/mx28_info_array.hpp>
 #include <cm730controller_msgs/msg/mx28_command.hpp>
+
+#include <map>
 
 #include "cm730controller/visibility_control.h"
 

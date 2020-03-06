@@ -15,10 +15,10 @@
 #ifndef CM730CONTROLLER__DATAUTIL_HPP_
 #define CM730CONTROLLER__DATAUTIL_HPP_
 
-#include "cm730controller/cm730table.hpp"
-
 #include <cstdint>
 #include <vector>
+
+#include "cm730controller/cm730table.hpp"
 
 namespace cm730controller
 {
