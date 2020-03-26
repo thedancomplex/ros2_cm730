@@ -28,7 +28,8 @@
 #include <string>
 #include <utility>
 
-using cm730driver::Cm730Device;
+namespace cm730driver
+{
 
 Cm730Device::Cm730Device(std::string path)
 : mPath{std::move(path)},
@@ -148,3 +149,5 @@ int Cm730Device::read(uint8_t * inPacket, size_t size)
 
   return i;
 }
+
+}  // namespace cm730driver
