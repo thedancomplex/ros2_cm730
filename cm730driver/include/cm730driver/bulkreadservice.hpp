@@ -85,7 +85,7 @@ public:
     for (auto i = 0u; i < request.read_requests.size() / 3; ++i) {
       auto result = cm730driver_msgs::msg::RangeReadResult{};
       // Get device for which result is, and how much data was sent
-      // TODO(sgvandijk): check this si the same as requested
+      // TODO(sgvandijk): check this is the same as requested
       result.device_id = *(dataCursor + ADDR_ID);
       auto length = *(dataCursor + ADDR_LENGTH) - ERROR_SIZE - CHECKSUM_SIZE;
       // Copy response data
