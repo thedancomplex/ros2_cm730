@@ -16,8 +16,7 @@
 
 #include "cm730driver/cm730service.hpp"
 
-namespace cm730driver
-{
+using cm730driver::Cm730ServiceBase;
 
 TEST(Cm730ServiceTests, initPacket) {
   auto packet = Cm730ServiceBase::initPacket(10, 200, 2);
@@ -61,5 +60,3 @@ TEST(Cm730ServiceTests, checkChecksum) {
   Cm730ServiceBase::setChecksum(packet);
   ASSERT_TRUE(Cm730ServiceBase::checkChecksum(packet));
 }
-
-}  // namespace cm730driver
