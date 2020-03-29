@@ -86,6 +86,6 @@ enum class CM730Table : uint8_t
   MAXNUM_ADDRESS
 };
 
-}
+}  // namespace cm730controller
 
 #endif  // CM730CONTROLLER__CM730TABLE_HPP_

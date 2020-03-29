@@ -23,6 +23,8 @@
 #include <cm730controller_msgs/msg/mx28_info_array.hpp>
 #include <cm730controller_msgs/msg/mx28_command.hpp>
 
+#include <map>
+
 #include "cm730controller/visibility_control.h"
 
 namespace cm730controller

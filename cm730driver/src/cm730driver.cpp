@@ -14,14 +14,14 @@
 
 #include "cm730driver/cm730driver.hpp"
 
+#include <memory>
+
 #include "cm730driver/cm730device.hpp"
 #include "cm730driver/pingservice.hpp"
 #include "cm730driver/readservice.hpp"
 #include "cm730driver/writeservice.hpp"
 #include "cm730driver/bulkreadservice.hpp"
 #include "cm730driver/syncwriteservice.hpp"
-
-#include <numeric>
 
 using namespace std::literals::chrono_literals;
 

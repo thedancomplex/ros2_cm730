@@ -15,6 +15,8 @@
 #ifndef CM730DRIVER__BULKREADSERVICE_HPP_
 #define CM730DRIVER__BULKREADSERVICE_HPP_
 
+#include <algorithm>
+
 #include "cm730driver/cm730service.hpp"
 #include "cm730driver_msgs/srv/bulk_read.hpp"
 
@@ -83,7 +85,7 @@ public:
     for (auto i = 0u; i < request.read_requests.size() / 3; ++i) {
       auto result = cm730driver_msgs::msg::RangeReadResult{};
       // Get device for which result is, and how much data was sent
-      // TODO: check this si the same as requested
+      // TODO(sgvandijk): check this is the same as requested
       result.device_id = *(dataCursor + ADDR_ID);
       auto length = *(dataCursor + ADDR_LENGTH) - ERROR_SIZE - CHECKSUM_SIZE;
       // Copy response data
@@ -97,6 +99,6 @@ public:
   }
 };
 
-}
+}  // namespace cm730driver
 
 #endif  // CM730DRIVER__BULKREADSERVICE_HPP_

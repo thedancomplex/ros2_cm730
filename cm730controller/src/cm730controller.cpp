@@ -12,13 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+#include <utility>
+
 #include "cm730controller/cm730controller.hpp"
 #include "cm730controller/cm730table.hpp"
 #include "cm730controller/mx28table.hpp"
 #include "cm730controller/datautil.hpp"
 
 using namespace std::chrono_literals;
-using namespace cm730controller_msgs::msg;
+
+using cm730controller_msgs::msg::MX28Info;
+using cm730controller_msgs::msg::MX28RamTable;
+using cm730controller_msgs::msg::CM730RamTable;
 
 namespace cm730controller
 {

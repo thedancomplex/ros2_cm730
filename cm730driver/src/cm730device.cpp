@@ -14,17 +14,22 @@
 
 #include "cm730driver/cm730device.hpp"
 
-#include <cstdio>
+#include <rclcpp/logging.hpp>
+
 #include <unistd.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <linux/serial.h>
 #include <sys/ioctl.h>
 
+#include <cstdio>
+#include <cstdint>
 #include <stdexcept>
-#include <rclcpp/logging.hpp>
+#include <string>
+#include <utility>
 
-using namespace cm730driver;
+namespace cm730driver
+{
 
 Cm730Device::Cm730Device(std::string path)
 : mPath{std::move(path)},
@@ -36,7 +41,7 @@ void Cm730Device::open()
 {
   auto newtio = termios{};
   auto serinfo = serial_struct{};
-  double baudrate = 1000000.0; //bps (1Mbps)
+  double baudrate = 1000000.0;  // bps (1Mbps)
 
   // Make sure device is closed before trying to open it
   close();
@@ -101,7 +106,7 @@ void Cm730Device::clear()
 int Cm730Device::write(uint8_t const * outPacket, size_t size)
 {
   auto i = ::write(mDevice, outPacket, size);
-  if (i < long(size)) {
+  if (i < int64_t(size)) {
     RCLCPP_ERROR(rclcpp::get_logger("cm730device"), "Failed writing complete message to CM730");
   } else if (i < 0) {
     RCLCPP_ERROR(rclcpp::get_logger("cm730device"), "Failed writing message to CM730");
@@ -144,3 +149,5 @@ int Cm730Device::read(uint8_t * inPacket, size_t size)
 
   return i;
 }
+
+}  // namespace cm730driver

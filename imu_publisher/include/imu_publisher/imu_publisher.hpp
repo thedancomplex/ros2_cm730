@@ -15,13 +15,14 @@
 #ifndef IMU_PUBLISHER__IMU_PUBLISHER_HPP_
 #define IMU_PUBLISHER__IMU_PUBLISHER_HPP_
 
-#include "imu_publisher/visibility_control.h"
-
 #include <rclcpp/rclcpp.hpp>
 #include <cm730controller_msgs/msg/cm730_info.hpp>
 #include <sensor_msgs/msg/imu.hpp>
+
 #include <cmath>
 #include <string>
+
+#include "imu_publisher/visibility_control.h"
 
 namespace imu_publisher
 {

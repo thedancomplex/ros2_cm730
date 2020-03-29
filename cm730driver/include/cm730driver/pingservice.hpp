@@ -65,6 +65,6 @@ public:
   }
 };
 
-}
+}  // namespace cm730driver
 
 #endif  // CM730DRIVER__PINGSERVICE_HPP_

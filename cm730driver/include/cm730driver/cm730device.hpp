@@ -25,7 +25,7 @@ namespace cm730driver
 class Cm730Device
 {
 public:
-  Cm730Device(std::string path);
+  explicit Cm730Device(std::string path);
 
   void open();
   void close();
@@ -38,8 +38,8 @@ public:
 private:
   std::string mPath;
   int mDevice;
-
 };
-}
+
+}  // namespace cm730driver
 
 #endif  // CM730DRIVER__CM730DEVICE_HPP_

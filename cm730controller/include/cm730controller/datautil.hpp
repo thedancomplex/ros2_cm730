@@ -15,10 +15,10 @@
 #ifndef CM730CONTROLLER__DATAUTIL_HPP_
 #define CM730CONTROLLER__DATAUTIL_HPP_
 
-#include "cm730controller/cm730table.hpp"
-
 #include <cstdint>
 #include <vector>
+
+#include "cm730controller/cm730table.hpp"
 
 namespace cm730controller
 {
@@ -53,7 +53,6 @@ public:
     *std::next(dataIter, addr_) = value & 0xFF;
     *std::next(dataIter, addr_ + 1) = (value >> 8) & 0xFF;
   }
-
 };
 
 }  // namespace cm730controller
