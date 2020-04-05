@@ -52,7 +52,7 @@ MxJointController::MxJointController()
       "head-tilt",
     });
 
-  mx28CommandPub_ = create_publisher<MX28Command>("/cm730/mx28command", rclcpp::SensorDataQoS());
+  mx28CommandPub_ = create_publisher<MX28Command>("/cm730/mx28command", rclcpp::ServicesQoS());
   jointStatePub_ = create_publisher<JointState>("/joint_states", rclcpp::SensorDataQoS());
 
   mx28InfoSub_ = create_subscription<MX28InfoArray>(
