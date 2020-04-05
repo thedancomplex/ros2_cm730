@@ -16,6 +16,7 @@
 
 #include <string>
 #include <memory>
+#include <utility>
 
 namespace imu_publisher
 {
@@ -31,7 +32,7 @@ IMUPublisher::IMUPublisher()
     "/cm730/cm730info",
     rclcpp::SensorDataQoS(),
     [ = ](cm730controller_msgs::msg::CM730Info::SharedPtr info) {
-      auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
+      auto imuStateMsg = std::make_unique<sensor_msgs::msg::Imu>();
 
       imuStateMsg->header.frame_id = imu_frame_;
 
@@ -58,7 +59,7 @@ IMUPublisher::IMUPublisher()
       imuStateMsg->orientation_covariance.at(0) = -1;
 
       imuStateMsg->header = info->header;
-      pub_->publish(*imuStateMsg);
+      pub_->publish(std::move(imuStateMsg));
     });
 }
 

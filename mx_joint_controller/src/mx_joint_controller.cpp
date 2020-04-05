@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <utility>
 
 namespace mx_joint_controller
 {
@@ -58,13 +59,13 @@ MxJointController::MxJointController()
     "/cm730/mx28info",
     rclcpp::ServicesQoS(),
     [ = ](MX28InfoArray::SharedPtr info) {
-      auto jointStateMsg = std::make_shared<JointState>();
+      auto jointStateMsg = std::make_unique<JointState>();
       for (auto const & mx : info->mx28s) {
         jointStateMsg->name.push_back(jointNames[mx.stat.id]);
         jointStateMsg->position.push_back(value2Rads(mx.dyna.present_position));
       }
       jointStateMsg->header = info.get()->header;
-      jointStatePub_->publish(*jointStateMsg);
+      jointStatePub_->publish(std::move(jointStateMsg));
     });
 
   jointCommandSub_ = create_subscription<JointCommand>(
