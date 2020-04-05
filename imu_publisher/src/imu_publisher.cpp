@@ -25,10 +25,11 @@ IMUPublisher::IMUPublisher()
 {
   get_parameter_or("imu_frame", imu_frame_, std::string("base_link"));
 
-  pub_ = create_publisher<sensor_msgs::msg::Imu>("/imu/data_raw");
+  pub_ = create_publisher<sensor_msgs::msg::Imu>("/imu/data_raw", rclcpp::SensorDataQoS());
 
   sub_ = create_subscription<cm730controller_msgs::msg::CM730Info>(
     "/cm730/cm730info",
+    rclcpp::SensorDataQoS(),
     [ = ](cm730controller_msgs::msg::CM730Info::SharedPtr info) {
       auto imuStateMsg = std::make_shared<sensor_msgs::msg::Imu>();
 
@@ -57,7 +58,7 @@ IMUPublisher::IMUPublisher()
       imuStateMsg->orientation_covariance.at(0) = -1;
 
       imuStateMsg->header = info->header;
-      pub_->publish(imuStateMsg);
+      pub_->publish(*imuStateMsg);
     });
 }
 
