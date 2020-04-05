@@ -51,11 +51,12 @@ MxJointController::MxJointController()
       "head-tilt",
     });
 
-  mx28CommandPub_ = create_publisher<MX28Command>("/cm730/mx28command");
-  jointStatePub_ = create_publisher<JointState>("/joint_states");
+  mx28CommandPub_ = create_publisher<MX28Command>("/cm730/mx28command", rclcpp::SensorDataQoS());
+  jointStatePub_ = create_publisher<JointState>("/joint_states", rclcpp::SensorDataQoS());
 
   mx28InfoSub_ = create_subscription<MX28InfoArray>(
     "/cm730/mx28info",
+    rclcpp::ServicesQoS(),
     [ = ](MX28InfoArray::SharedPtr info) {
       auto jointStateMsg = std::make_shared<JointState>();
       for (auto const & mx : info->mx28s) {
@@ -63,11 +64,12 @@ MxJointController::MxJointController()
         jointStateMsg->position.push_back(value2Rads(mx.dyna.present_position));
       }
       jointStateMsg->header = info.get()->header;
-      jointStatePub_->publish(jointStateMsg);
+      jointStatePub_->publish(*jointStateMsg);
     });
 
   jointCommandSub_ = create_subscription<JointCommand>(
     "/cm730/joint_commands",
+    rclcpp::SensorDataQoS(),
     [ = ](JointCommand::SharedPtr cmd) {
       auto mx28Command = MX28Command{};
       // Transform all names to IDs
