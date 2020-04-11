@@ -40,6 +40,7 @@ public:
   static constexpr uint8_t HEADER_SIZE = 5;
   static constexpr uint8_t CHECKSUM_SIZE = 1;
   static constexpr uint8_t ERROR_SIZE = 1;
+
   /// Indexes to parts in CM730 packets
   enum  PacketAddr : uint8_t
   {
@@ -116,7 +117,7 @@ public:
   /** Set parameter bytes
    *
    * @param request Service request that can be used to determine parameters
-   * @param packet Pakcet to send, with header initialised
+   * @param packet Packet to send, with header initialised
    */
   virtual void setDataParameters(const typename ServiceT::Request & request, Packet & packet) = 0;
 
@@ -188,12 +189,19 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
   // Send packet
   mDevice->write(txPacket.data(), txPacket.size());
 
+  // Don't read if no reply is expected
+  auto rxSize = rxPacketSize(*request);
+  if (rxSize == 0) {
+    return;
+  }
+
   // Prepare for reading response
-  auto rxPacket = Packet(rxPacketSize(*request));
+  auto rxPacket = Packet(rxSize);
 
   auto readStartTime = mClock->now();
   auto nRead = 0u;
   while (nRead < rxPacket.size()) {
+    RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), "Starting read loop");
     // Check if we have timed out and give up
     auto readingTime = mClock->now() - readStartTime;
     auto delta_ms = readingTime.nanoseconds() / 1e6;
@@ -227,7 +235,7 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
     rclcpp::sleep_for(std::chrono::microseconds{100});
   }
 
-  // Pakcet fully read, set timestamp
+  // Packet fully read, set timestamp
   auto now = mClock->now();
   response->header.stamp = now;
 
