@@ -41,7 +41,7 @@ public:
   size_t rxPacketSize(const SyncWrite::Request & request) override
   {
     (void)request;
-    return HEADER_SIZE + CHECKSUM_SIZE;
+    return 0;
   }
 
   uint8_t getDeviceId(const SyncWrite::Request & request) override
