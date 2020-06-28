@@ -80,7 +80,7 @@ ament_export_dependencies(
 ament_export_include_directories(
   include
 )
-ament_export_interfaces(
+ament_export_targets(
   export_${PROJECT_NAME}
 )
 ament_export_libraries(
