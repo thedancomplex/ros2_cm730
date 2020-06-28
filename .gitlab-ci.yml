@@ -1,4 +1,4 @@
-image: osrf/ros:dashing-desktop
+image: osrf/ros:foxy-desktop
 
 before_script:
   - pip3 install -U pytest colcon-common-extensions
