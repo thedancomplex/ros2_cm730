@@ -60,7 +60,6 @@ target_link_libraries(cm730controller_node cm730controller)
 target_compile_options(cm730controller_node PRIVATE -Werror)
 
 install(TARGETS cm730controller_node
-  EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

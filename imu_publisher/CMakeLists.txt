@@ -57,7 +57,6 @@ target_include_directories(imu_publisher_node PUBLIC
 target_link_libraries(imu_publisher_node imu_publisher)
 
 install(TARGETS imu_publisher_node
-  EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME}
 )
 

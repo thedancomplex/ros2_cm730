@@ -61,7 +61,6 @@ target_include_directories(mx_joint_controller_node PUBLIC
 target_link_libraries(mx_joint_controller_node mx_joint_controller)
 
 install(TARGETS mx_joint_controller_node
-  EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
