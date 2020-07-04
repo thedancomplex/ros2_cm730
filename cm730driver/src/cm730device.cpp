@@ -120,19 +120,23 @@ int Cm730Device::read(uint8_t * inPacket, size_t size)
   if (i < 0) {
     switch (errno) {
       case EBADF:
-        RCLCPP_ERROR(rclcpp::get_logger(
+        RCLCPP_ERROR(
+          rclcpp::get_logger(
             "cm730device"), "Not a valid file descriptor or is not open for reading");
         break;
       case EFAULT:
-        RCLCPP_ERROR(rclcpp::get_logger("cm730device"),
+        RCLCPP_ERROR(
+          rclcpp::get_logger("cm730device"),
           "Buffer outside of accessible address space");
         break;
       case EINTR:
-        RCLCPP_ERROR(rclcpp::get_logger(
+        RCLCPP_ERROR(
+          rclcpp::get_logger(
             "cm730device"), "Reading was interrupted by a signal before any data was read");
         break;
       case EINVAL:
-        RCLCPP_ERROR(rclcpp::get_logger(
+        RCLCPP_ERROR(
+          rclcpp::get_logger(
             "cm730device"), "File descriptor invalid, or invalid alignment");
         break;
       case EIO:

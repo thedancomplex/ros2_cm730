@@ -245,7 +245,8 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
 
   // Check error byte
   if (rxPacket[ADDR_ERROR] != 0) {
-    RCLCPP_ERROR(rclcpp::get_logger("cm730service"),
+    RCLCPP_ERROR(
+      rclcpp::get_logger("cm730service"),
       "Received error byte: " + std::to_string(rxPacket[ADDR_ERROR]));
     response->error = rxPacket[ADDR_ERROR];
     return;

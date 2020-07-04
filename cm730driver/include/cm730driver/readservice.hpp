@@ -61,7 +61,8 @@ public:
     Read::Response & response) override
   {
     (void)request;
-    std::copy(std::next(packet.begin(), HEADER_SIZE), std::prev(packet.end(), CHECKSUM_SIZE),
+    std::copy(
+      std::next(packet.begin(), HEADER_SIZE), std::prev(packet.end(), CHECKSUM_SIZE),
       std::back_inserter(response.data));
   }
 };

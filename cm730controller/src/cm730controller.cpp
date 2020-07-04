@@ -50,7 +50,8 @@ Cm730Controller::Cm730Controller()
 
   while (!writeClient_->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      RCLCPP_ERROR(get_logger(),
+      RCLCPP_ERROR(
+        get_logger(),
         "Bulk read client interrupted while waiting for service to appear.");
       return;
     }
@@ -107,7 +108,8 @@ void Cm730Controller::readStaticInfo()
 void Cm730Controller::handleStaticInfo(BulkReadClient::SharedFuture response)
 {
   auto const & results = response.get()->results;
-  RCLCPP_INFO(get_logger(),
+  RCLCPP_INFO(
+    get_logger(),
     "Received static CM730 info; # of results: " + std::to_string(results.size()));
 
   // CM730
@@ -148,8 +150,9 @@ void Cm730Controller::handleStaticInfo(BulkReadClient::SharedFuture response)
     staticMx28Info->ccw_angle_limit =
       DataUtil::getWord(mx28Result.data, MX28Table::CCW_ANGLE_LIMIT_L, MX28Table::MODEL_NUMBER_L);
     staticMx28Info->high_limit_temperature =
-      DataUtil::getByte(mx28Result.data, MX28Table::HIGH_LIMIT_TEMPERATURE,
-        MX28Table::MODEL_NUMBER_L);
+      DataUtil::getByte(
+      mx28Result.data, MX28Table::HIGH_LIMIT_TEMPERATURE,
+      MX28Table::MODEL_NUMBER_L);
     staticMx28Info->low_limit_voltage =
       DataUtil::getByte(mx28Result.data, MX28Table::LOW_LIMIT_VOLTAGE, MX28Table::MODEL_NUMBER_L);
     staticMx28Info->high_limit_voltage =
@@ -253,15 +256,17 @@ void Cm730Controller::handleDynamicInfo(BulkReadClient::SharedFuture response)
     auto dynamicMx28Info = std::make_shared<MX28RamTable>();
 
     dynamicMx28Info->present_position =
-      DataUtil::getWord(mx28Result.data, MX28Table::PRESENT_POSITION_L,
-        MX28Table::PRESENT_POSITION_L);
+      DataUtil::getWord(
+      mx28Result.data, MX28Table::PRESENT_POSITION_L,
+      MX28Table::PRESENT_POSITION_L);
     dynamicMx28Info->present_speed =
       DataUtil::getWord(mx28Result.data, MX28Table::PRESENT_SPEED_L, MX28Table::PRESENT_POSITION_L);
     dynamicMx28Info->present_voltage =
       DataUtil::getByte(mx28Result.data, MX28Table::PRESENT_VOLTAGE, MX28Table::PRESENT_POSITION_L);
     dynamicMx28Info->present_temperature =
-      DataUtil::getByte(mx28Result.data, MX28Table::PRESENT_TEMPERATURE,
-        MX28Table::PRESENT_POSITION_L);
+      DataUtil::getByte(
+      mx28Result.data, MX28Table::PRESENT_TEMPERATURE,
+      MX28Table::PRESENT_POSITION_L);
 
     auto mx28Info = std::make_shared<MX28Info>();
     mx28Info->stat = *staticMx28Info_[mx28Result.device_id];
@@ -304,11 +309,13 @@ void Cm730Controller::writeCommands()
     for (auto i = 0u; i < mx28Command->device_id.size(); ++i) {
       DataUtil::setByte(mx28Command->device_id[i], dataIter, 0, 0);
       if (MX28Table::TORQUE_ENABLE >= startAddr && MX28Table::TORQUE_ENABLE <= endAddr) {
-        DataUtil::setByte(mx28Command->torque[i] ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE,
+        DataUtil::setByte(
+          mx28Command->torque[i] ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE,
           dataStartAddr);
       }
       if (MX28Table::LED >= startAddr && MX28Table::LED <= endAddr) {
-        DataUtil::setByte(mx28Command->led[i] ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE,
+        DataUtil::setByte(
+          mx28Command->led[i] ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE,
           dataStartAddr);
       }
       if (MX28Table::D_GAIN >= startAddr && MX28Table::P_GAIN <= endAddr) {
@@ -317,7 +324,8 @@ void Cm730Controller::writeCommands()
         DataUtil::setByte(mx28Command->p_gain[i], dataIter, MX28Table::P_GAIN, dataStartAddr);
       }
       if (MX28Table::GOAL_POSITION_L >= startAddr && MX28Table::GOAL_POSITION_H <= endAddr) {
-        DataUtil::setWord(mx28Command->goal_position[i], dataIter, MX28Table::GOAL_POSITION_L,
+        DataUtil::setWord(
+          mx28Command->goal_position[i], dataIter, MX28Table::GOAL_POSITION_L,
           dataStartAddr);
       }
 
@@ -326,8 +334,9 @@ void Cm730Controller::writeCommands()
     syncWriteClient_->async_send_request(
       syncWriteRequest,
       [this](SyncWriteClient::SharedFuture response) {
-        RCLCPP_INFO(get_logger(),
-        "Command write finished, error: " + std::to_string(response.get()->error));
+        RCLCPP_INFO(
+          get_logger(),
+          "Command write finished, error: " + std::to_string(response.get()->error));
       });
   }
 }

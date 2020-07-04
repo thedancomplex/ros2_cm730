@@ -26,7 +26,8 @@ MxJointController::MxJointController()
 : rclcpp::Node{"mx_joint_controller"}
 {
   auto jointNames = std::vector<std::string>{};
-  get_parameter_or("joint_names", jointNames, {
+  get_parameter_or(
+    "joint_names", jointNames, {
       "base",
       "shoulder-pitch-r",
       "shoulder-pitch-l",
