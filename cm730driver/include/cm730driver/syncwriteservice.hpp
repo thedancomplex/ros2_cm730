@@ -55,7 +55,8 @@ public:
     packet[ADDR_PARAMETER] = request.address;
     packet[ADDR_PARAMETER + 1] = request.length;
 
-    std::copy(request.data.begin(), request.data.end(), std::next(
+    std::copy(
+      request.data.begin(), request.data.end(), std::next(
         packet.begin(), ADDR_PARAMETER + 2));
   }
 

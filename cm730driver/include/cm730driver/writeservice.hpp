@@ -52,7 +52,8 @@ public:
   void setDataParameters(const Write::Request & request, Packet & packet) override
   {
     packet[ADDR_PARAMETER] = request.address;
-    std::copy(request.data.begin(), request.data.end(),
+    std::copy(
+      request.data.begin(), request.data.end(),
       std::next(packet.begin(), ADDR_PARAMETER + 1));
   }
 

@@ -61,7 +61,6 @@ target_include_directories(mx_joint_controller_node PUBLIC
 target_link_libraries(mx_joint_controller_node mx_joint_controller)
 
 install(TARGETS mx_joint_controller_node
-  EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
@@ -89,7 +88,7 @@ ament_export_dependencies(
 ament_export_include_directories(
   include
 )
-ament_export_interfaces(
+ament_export_targets(
   export_${PROJECT_NAME}
 )
 ament_export_libraries(

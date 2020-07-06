@@ -57,7 +57,6 @@ target_include_directories(imu_publisher_node PUBLIC
 target_link_libraries(imu_publisher_node imu_publisher)
 
 install(TARGETS imu_publisher_node
-  EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -73,7 +72,7 @@ ament_export_dependencies(
 ament_export_include_directories(
   include
 )
-ament_export_interfaces(
+ament_export_targets(
   export_${PROJECT_NAME}
 )
 ament_export_libraries(

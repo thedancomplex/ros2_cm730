@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <utility>
 
 namespace mx_joint_controller
 {
@@ -25,7 +26,8 @@ MxJointController::MxJointController()
 : rclcpp::Node{"mx_joint_controller"}
 {
   auto jointNames = std::vector<std::string>{};
-  get_parameter_or("joint_names", jointNames, {
+  get_parameter_or(
+    "joint_names", jointNames, {
       "base",
       "shoulder-pitch-r",
       "shoulder-pitch-l",
@@ -51,23 +53,25 @@ MxJointController::MxJointController()
       "head-tilt",
     });
 
-  mx28CommandPub_ = create_publisher<MX28Command>("/cm730/mx28command");
-  jointStatePub_ = create_publisher<JointState>("/joint_states");
+  mx28CommandPub_ = create_publisher<MX28Command>("/cm730/mx28command", rclcpp::ServicesQoS());
+  jointStatePub_ = create_publisher<JointState>("/joint_states", rclcpp::SensorDataQoS());
 
   mx28InfoSub_ = create_subscription<MX28InfoArray>(
     "/cm730/mx28info",
+    rclcpp::ServicesQoS(),
     [ = ](MX28InfoArray::SharedPtr info) {
-      auto jointStateMsg = std::make_shared<JointState>();
+      auto jointStateMsg = std::make_unique<JointState>();
       for (auto const & mx : info->mx28s) {
         jointStateMsg->name.push_back(jointNames[mx.stat.id]);
         jointStateMsg->position.push_back(value2Rads(mx.dyna.present_position));
       }
       jointStateMsg->header = info.get()->header;
-      jointStatePub_->publish(jointStateMsg);
+      jointStatePub_->publish(std::move(jointStateMsg));
     });
 
   jointCommandSub_ = create_subscription<JointCommand>(
     "/cm730/joint_commands",
+    rclcpp::SensorDataQoS(),
     [ = ](JointCommand::SharedPtr cmd) {
       auto mx28Command = MX28Command{};
       // Transform all names to IDs

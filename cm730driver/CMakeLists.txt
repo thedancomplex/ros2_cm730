@@ -56,7 +56,6 @@ target_include_directories(cm730driver_node PUBLIC
 target_link_libraries(cm730driver_node cm730driver)
 
 install(TARGETS cm730driver_node
-  EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
@@ -80,11 +79,11 @@ ament_export_dependencies(
 ament_export_include_directories(
   include
 )
-ament_export_interfaces(
-  export_${PROJECT_NAME}
-)
 ament_export_libraries(
   cm730driver
+)
+ament_export_targets(
+  export_${PROJECT_NAME}
 )
 
 ament_package()
