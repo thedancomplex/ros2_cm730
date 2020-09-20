@@ -211,6 +211,20 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
       // A positive amount of bytes is good
       nRead += n;
 
+      // Shift bytes if first bytes are not equal to the header
+      for (auto nShift = 0u; nShift < nRead - 1; ++nShift) {
+        if (rxPacket[nShift] == 0xFF && rxPacket[nShift + 1] == 0xFF) {
+          if (nShift > 0u) {
+            for (auto i = 0u; i < nRead - nShift; ++i) {
+              rxPacket[i] = rxPacket[i + nShift];
+            }
+          }
+
+          nRead -= nShift;
+          break;
+        }
+      }
+
 #if (RCLCPP_LOG_MIN_SEVERITY <= RCLCPP_LOG_MIN_SEVERITY_DEBUG)
       // Log what we've read so far
       {
