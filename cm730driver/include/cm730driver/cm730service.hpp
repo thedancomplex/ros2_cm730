@@ -212,17 +212,12 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
       nRead += n;
 
       // Shift bytes if first bytes are not equal to the header
-      for (auto nShift = 0u; nShift < nRead - 1; ++nShift) {
-        if (rxPacket[nShift] == 0xFF && rxPacket[nShift + 1] == 0xFF) {
-          if (nShift > 0u) {
-            for (auto i = 0u; i < nRead - nShift; ++i) {
-              rxPacket[i] = rxPacket[i + nShift];
-            }
-          }
-
-          nRead -= nShift;
-          break;
-        }
+      auto headerStart = std::adjacent_find(
+        rxPacket.begin(), std::next(rxPacket.begin(), nRead),
+        [](uint8_t a, uint8_t b) { return a == 0xFF && b == 0xFF; });
+      if (headerStart != rxPacket.begin() && headerStart != rxPacket.end()) {
+        std::copy(headerStart, std::next(rxPacket.begin(), nRead), rxPacket.begin());
+        nRead -= std::distance(rxPacket.begin(), headerStart);
       }
 
 #if (RCLCPP_LOG_MIN_SEVERITY <= RCLCPP_LOG_MIN_SEVERITY_DEBUG)
