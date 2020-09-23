@@ -300,14 +300,17 @@ void Cm730Controller::writeCommands()
 
     syncWriteRequest->address = uint8_t(startAddr);
     syncWriteRequest->length = uint8_t(endAddr) - uint8_t(startAddr) + 1;
-    syncWriteRequest->data.resize((1 + syncWriteRequest->length) * mx28Command->device_id.size());
+    syncWriteRequest->write_requests.resize(mx28Command->device_id.size());
 
-    auto dataIter = syncWriteRequest->data.begin();
-    // -1 becuase to first byte in the data is the device id, so real data starts at 1
-    auto dataStartAddr = MX28Table(uint8_t(startAddr) - 1);
+    auto dataStartAddr = MX28Table(uint8_t(startAddr));
 
     for (auto i = 0u; i < mx28Command->device_id.size(); ++i) {
-      DataUtil::setByte(mx28Command->device_id[i], dataIter, 0, 0);
+      auto & writeRequest = syncWriteRequest->write_requests[i];
+      writeRequest.device_id = mx28Command->device_id[i];
+
+      writeRequest.data.resize(syncWriteRequest->length);
+      auto dataIter = writeRequest.data.begin();
+
       if (MX28Table::TORQUE_ENABLE >= startAddr && MX28Table::TORQUE_ENABLE <= endAddr) {
         DataUtil::setByte(
           mx28Command->torque[i] ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE,
@@ -331,6 +334,7 @@ void Cm730Controller::writeCommands()
 
       std::advance(dataIter, 1 + syncWriteRequest->length);
     }
+
     syncWriteClient_->async_send_request(
       syncWriteRequest,
       [this](SyncWriteClient::SharedFuture response) {

@@ -35,7 +35,11 @@ public:
 
   size_t txPacketSize(const SyncWrite::Request & request) override
   {
-    return HEADER_SIZE + 2 + request.data.size() + CHECKSUM_SIZE;
+    auto dataSize = std::accumulate(
+      request.write_requests.begin(), request.write_requests.end(), 0u,
+      [](auto sum, auto element) {return sum + element.data.size() + 1;});
+
+    return HEADER_SIZE + 2 + dataSize + CHECKSUM_SIZE;
   }
 
   size_t rxPacketSize(const SyncWrite::Request & request) override
@@ -55,9 +59,14 @@ public:
     packet[ADDR_PARAMETER] = request.address;
     packet[ADDR_PARAMETER + 1] = request.length;
 
-    std::copy(
-      request.data.begin(), request.data.end(), std::next(
-        packet.begin(), ADDR_PARAMETER + 2));
+    auto cursor = ADDR_PARAMETER + 2;
+    for (auto const & writeRequest : request.write_requests) {
+      packet[cursor++] = writeRequest.device_id;
+      std::copy(
+        writeRequest.data.begin(), writeRequest.data.end(),
+        std::next(packet.begin(), cursor));
+      cursor += request.length;
+    }
   }
 
   void handlePacket(
