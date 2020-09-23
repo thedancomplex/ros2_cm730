@@ -41,17 +41,14 @@ public:
 
   size_t txPacketSize(const BulkRead::Request & request) override
   {
-    return HEADER_SIZE + 1 + 3 * request.read_requests.size() / 3 + CHECKSUM_SIZE;
+    return HEADER_SIZE + 1 + 3 * request.read_requests.size() + CHECKSUM_SIZE;
   }
 
   size_t rxPacketSize(const BulkRead::Request & request) override
   {
     auto total_request_length = 0;
-    // Request are 3 tuples: (length, device_id, addr)
-    for (auto iter = request.read_requests.begin(); iter != request.read_requests.end();
-      std::advance(iter, 3))
-    {
-      total_request_length += HEADER_SIZE + *iter + CHECKSUM_SIZE;
+    for (auto const & readRequest : request.read_requests) {
+      total_request_length += HEADER_SIZE + readRequest.length + CHECKSUM_SIZE;
     }
     return total_request_length;
   }
@@ -66,12 +63,10 @@ public:
   {
     packet[ADDR_PARAMETER] = 0;
     auto cursor = ADDR_PARAMETER + 1;
-    for (auto iter = request.read_requests.begin(); iter != request.read_requests.end();
-      std::advance(iter, 3))
-    {
-      packet[cursor++] = *std::next(iter, 0);
-      packet[cursor++] = *std::next(iter, 1);
-      packet[cursor++] = *std::next(iter, 2);
+    for (auto const & readRequest : request.read_requests) {
+      packet[cursor++] = readRequest.length;
+      packet[cursor++] = readRequest.device_id;
+      packet[cursor++] = readRequest.address;
     }
   }
 
