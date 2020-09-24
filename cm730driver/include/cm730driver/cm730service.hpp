@@ -19,6 +19,7 @@
 #include <rclcpp/logging.hpp>
 #include <rclcpp/node.hpp>
 
+#include <algorithm>
 #include <array>
 #include <vector>
 #include <numeric>
@@ -218,6 +219,15 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
     if (n > 0) {
       // A positive amount of bytes is good
       nRead += n;
+
+      // Shift bytes if first bytes are not equal to the header
+      auto headerStart = std::adjacent_find(
+        rxPacket.begin(), std::next(rxPacket.begin(), nRead),
+        [](uint8_t a, uint8_t b) {return a == 0xFF && b == 0xFF;});
+      if (headerStart != rxPacket.begin() && headerStart != rxPacket.end()) {
+        std::copy(headerStart, std::next(rxPacket.begin(), nRead), rxPacket.begin());
+        nRead -= std::distance(rxPacket.begin(), headerStart);
+      }
 
 #if (RCLCPP_LOG_MIN_SEVERITY <= RCLCPP_LOG_MIN_SEVERITY_DEBUG)
       // Log what we've read so far
