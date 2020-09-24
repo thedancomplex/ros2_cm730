@@ -77,7 +77,7 @@ public:
   {
     auto dataCursor = packet.begin();
     // Go through received message, 1 per requested device
-    for (auto i = 0u; i < request.read_requests.size() / 3; ++i) {
+    for (auto i = 0u; i < request.read_requests.size(); ++i) {
       auto result = cm730driver_msgs::msg::RangeReadResult{};
       // Get device for which result is, and how much data was sent
       // TODO(sgvandijk): check this is the same as requested
