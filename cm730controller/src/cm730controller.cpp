@@ -88,14 +88,20 @@ void Cm730Controller::readStaticInfo()
 {
   // Prepare bulk read request messages for reading static information,
   auto staticBulkReadRequest = std::make_shared<BulkRead::Request>();
-  staticBulkReadRequest->read_requests = {
-    uint8_t(CM730Table::EEPROM_LENGTH), 200, 0    // CM730 EEPROM data
-  };
+
+  auto cm730ReadRequest = cm730driver_msgs::msg::RangeReadRequest();
+  cm730ReadRequest.length = uint8_t(CM730Table::EEPROM_LENGTH);
+  cm730ReadRequest.device_id = 200;
+  cm730ReadRequest.address = 0;
+  staticBulkReadRequest->read_requests.push_back(cm730ReadRequest);
+
+  auto mx28ReadRequest = cm730driver_msgs::msg::RangeReadRequest();
+  mx28ReadRequest.length = uint8_t(MX28Table::EEPROM_LENGTH);
+  mx28ReadRequest.address = 0;
 
   for (auto i = 1; i <= 20; ++i) {
-    staticBulkReadRequest->read_requests.push_back(uint8_t(MX28Table::EEPROM_LENGTH));
-    staticBulkReadRequest->read_requests.push_back(i);
-    staticBulkReadRequest->read_requests.push_back(0);
+    mx28ReadRequest.device_id = i;
+    staticBulkReadRequest->read_requests.push_back(mx28ReadRequest);
   }
 
   // Request and wait for static info once
@@ -181,17 +187,21 @@ void Cm730Controller::startLoop()
 {
   auto dynamicBulkReadRequest = std::make_shared<BulkRead::Request>();
   auto cm730ReadLength = uint8_t{uint8_t(CM730Table::VOLTAGE) - uint8_t(CM730Table::DXL_POWER) + 1};
-  dynamicBulkReadRequest->read_requests = {
-    cm730ReadLength, 200, uint8_t(CM730Table::DXL_POWER)    // CM730 EEPROM data
-  };
 
-  auto mx28ReadLength = uint8_t{uint8_t(MX28Table::PRESENT_TEMPERATURE) - uint8_t(
-      MX28Table::PRESENT_POSITION_L) + 1};
+  auto cm730ReadRequest = cm730driver_msgs::msg::RangeReadRequest();
+  cm730ReadRequest.length = cm730ReadLength;
+  cm730ReadRequest.device_id = 200;
+  cm730ReadRequest.address = uint8_t(CM730Table::DXL_POWER);
+  dynamicBulkReadRequest->read_requests.push_back(cm730ReadRequest);
+
+  auto mx28ReadRequest = cm730driver_msgs::msg::RangeReadRequest();
+  mx28ReadRequest.length = uint8_t{uint8_t(MX28Table::PRESENT_TEMPERATURE) -
+    uint8_t(MX28Table::PRESENT_POSITION_L) + 1};
+  mx28ReadRequest.address = uint8_t(MX28Table::PRESENT_POSITION_L);
+
   for (auto i = uint8_t{1}; i <= 20; ++i) {
-    dynamicBulkReadRequest->read_requests.insert(
-      dynamicBulkReadRequest->read_requests.end(), {
-        mx28ReadLength, i, uint8_t(MX28Table::PRESENT_POSITION_L)
-      });
+    mx28ReadRequest.device_id = i;
+    dynamicBulkReadRequest->read_requests.push_back(mx28ReadRequest);
   }
 
   auto loop =
@@ -300,14 +310,17 @@ void Cm730Controller::writeCommands()
 
     syncWriteRequest->address = uint8_t(startAddr);
     syncWriteRequest->length = uint8_t(endAddr) - uint8_t(startAddr) + 1;
-    syncWriteRequest->data.resize((1 + syncWriteRequest->length) * mx28Command->device_id.size());
+    syncWriteRequest->write_requests.resize(mx28Command->device_id.size());
 
-    auto dataIter = syncWriteRequest->data.begin();
-    // -1 becuase to first byte in the data is the device id, so real data starts at 1
-    auto dataStartAddr = MX28Table(uint8_t(startAddr) - 1);
+    auto dataStartAddr = MX28Table(uint8_t(startAddr));
 
     for (auto i = 0u; i < mx28Command->device_id.size(); ++i) {
-      DataUtil::setByte(mx28Command->device_id[i], dataIter, 0, 0);
+      auto & writeRequest = syncWriteRequest->write_requests[i];
+      writeRequest.device_id = mx28Command->device_id[i];
+
+      writeRequest.data.resize(syncWriteRequest->length);
+      auto dataIter = writeRequest.data.begin();
+
       if (MX28Table::TORQUE_ENABLE >= startAddr && MX28Table::TORQUE_ENABLE <= endAddr) {
         DataUtil::setByte(
           mx28Command->torque[i] ? 1 : 0, dataIter, MX28Table::TORQUE_ENABLE,
@@ -331,6 +344,7 @@ void Cm730Controller::writeCommands()
 
       std::advance(dataIter, 1 + syncWriteRequest->length);
     }
+
     syncWriteClient_->async_send_request(
       syncWriteRequest,
       [this](SyncWriteClient::SharedFuture response) {

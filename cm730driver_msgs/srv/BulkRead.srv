@@ -1,9 +1,5 @@
 # Requests for all separate devices
-# TODO: At the moment you can't nest objects in CLI service calls
-# (https://github.com/ros2/ros2cli/issues/59).
-# For now we just use a plain bytes array, which should have length multiple of 3,
-# where each tuple has (length, device_id, address)
-uint8[] read_requests
+RangeReadRequest[] read_requests
 ---
 std_msgs/Header header
 uint16 error
