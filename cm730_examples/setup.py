@@ -11,7 +11,11 @@ setup(
         'torque_off',
         'ping_motors'
     ],
-    data_files=[],
+    data_files=[
+        ('share/' + package_name, ['package.xml']),
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+    ],
     install_requires=['setuptools'],
     maintainer='Sander van Dijk',
     maintainer_email='sgvandijk@gmail.com',
