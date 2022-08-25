@@ -1,3 +1,6 @@
+# TODO:
+* Ros 2 for x86 (32bit) comptuer on the origonal Darwin-OP (i.e. a Fit-PC)
+
 # CM730
 
 This repository contains a suite of ROS 2 packages to work with the
