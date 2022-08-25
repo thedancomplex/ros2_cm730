@@ -21,16 +21,8 @@ sudo apt update && sudo apt install -y \
   build-essential \
   cmake \
   git \
-  python3-colcon-common-extensions \
   python3-flake8 \
-  python3-flake8-blind-except \
-  python3-flake8-builtins \
-  python3-flake8-class-newline \
-  python3-flake8-comprehensions \
-  python3-flake8-deprecated \
-  python3-flake8-docstrings \
-  python3-flake8-import-order \
-  python3-flake8-quotes \
+  python3-flake8-* \
   python3-pip \
   python3-pytest \
   python3-pytest-cov \
@@ -41,9 +33,21 @@ sudo apt update && sudo apt install -y \
   python3-vcstool \
   wget
 
+sudo apt install libtinyxml2-dev
+sudo apt install libasio-dev 
+sudo apt install libacl1-dev
+sudo apt install gcc g++ cmake libacl1-dev libncurses5-dev pkg-config
+sudo apt install libeigen3-dev
+
 mkdir -p ~/ros2_humble/src
 cd ~/ros2_humble
 wget https://raw.githubusercontent.com/ros2/ros2/humble/ros2.repos
 vcs import src < ros2.repos
+
+sudo apt upgrade
+
+sudo rosdep init
+rosdep update
+rosdep install --from-paths src --ignore-src -y --skip-keys "fastcdr rti-connext-dds-6.0.1 urdfdom_headers"
 
 
