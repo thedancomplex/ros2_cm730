@@ -15,7 +15,9 @@ sudo add-apt-repository universe
 sudo apt update && sudo apt install curl gnupg lsb-release
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+DEB_VERSION=$(env -i bash -c '. /etc/os-release; echo $VERSION_CODENAME')
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $DEB_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
 sudo apt update && sudo apt install -y \
   build-essential \
@@ -38,6 +40,22 @@ sudo apt install libasio-dev
 sudo apt install libacl1-dev
 sudo apt install gcc g++ cmake libacl1-dev libncurses5-dev pkg-config
 sudo apt install libeigen3-dev
+sudo apt install python3-lark
+sudo apt install python3-numpy
+sudo apt install libldap2-dev
+sudo apt install rtirq-init
+
+THE_DIR=$(pwd)
+
+cd /tmp/
+git clone https://github.com/eclipse-cyclonedds/cyclonedds.git
+cd cyclonedds
+mkdir build
+cmake ../
+make
+sudo make install
+
+cd $THE_DIR
 
 mkdir -p ~/ros2_humble/src
 cd ~/ros2_humble
