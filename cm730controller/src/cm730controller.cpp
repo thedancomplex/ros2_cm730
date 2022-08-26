@@ -114,9 +114,12 @@ void Cm730Controller::readStaticInfo()
 void Cm730Controller::handleStaticInfo(BulkReadClient::SharedFuture response)
 {
   auto const & results = response.get()->results;
+  // removed
+  /*
   RCLCPP_INFO(
     get_logger(),
     "Received static CM730 info; # of results: " + std::to_string(results.size()));
+  */
 
   // CM730
   auto cm730Result = results[0];
@@ -348,9 +351,12 @@ void Cm730Controller::writeCommands()
     syncWriteClient_->async_send_request(
       syncWriteRequest,
       [this](SyncWriteClient::SharedFuture response) {
+      // removed
+      /*
         RCLCPP_INFO(
           get_logger(),
           std::to_string("Command write finished, error: ") + std::to_string(response.get()->error));
+	*/
       });
   }
 }
