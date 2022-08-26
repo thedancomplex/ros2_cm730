@@ -44,6 +44,8 @@ sudo apt install python3-lark
 sudo apt install python3-numpy
 sudo apt install libldap2-dev
 sudo apt install rtirq-init
+sudo apt install libbullet-dev
+
 
 THE_DIR=$(pwd)
 
@@ -56,6 +58,11 @@ make
 sudo make install
 
 cd $THE_DIR
+
+
+sudo systemctl mask brltty.path
+sudo systemctl mask brltty
+
 
 mkdir -p ~/ros2_humble/src
 cd ~/ros2_humble
