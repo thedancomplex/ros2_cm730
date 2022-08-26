@@ -353,7 +353,7 @@ void Cm730Controller::writeCommands()
       [this](SyncWriteClient::SharedFuture response) {
         RCLCPP_INFO(
           get_logger(),
-          std::to_string(response.get()->error));
+          std::to_string(str::to_string(response.get()->error)));
           //std::to_string("Command write finished, error: ") + std::to_string(response.get()->error));
       });
   }
