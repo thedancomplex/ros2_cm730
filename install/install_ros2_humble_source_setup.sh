@@ -45,7 +45,12 @@ sudo apt install python3-numpy
 sudo apt install libldap2-dev
 sudo apt install rtirq-init
 sudo apt install libbullet-dev
-
+sudo apt install python3-opencv
+sudo apt install libopencv-dev
+sudo apt-get install mesa-common-dev
+sudo apt install libqt5core5a
+sudo apt-get install qtbase5-dev
+sudo apt-get install qtdeclarative5-dev
 
 THE_DIR=$(pwd)
 
@@ -75,4 +80,6 @@ sudo rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src -y --skip-keys "fastcdr rti-connext-dds-6.0.1 urdfdom_headers"
 
+colcon build --simlink-install --packages-skip-build-finished
 
+echo ". ~/ros2_humble/install/local_setup.bash" >> ~/.bashrc
