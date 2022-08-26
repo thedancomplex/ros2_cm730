@@ -83,6 +83,14 @@ sudo rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src -y --skip-keys "fastcdr rti-connext-dds-6.0.1 urdfdom_headers"
 
-colcon build --simlink-install --packages-skip-build-finished
+colcon build --symlink-install --packages-skip-build-finished
+
+cd $HUMBLE_INSTALL_DIR/src
+git clone https://github.com/thedancomplex/ros2_cm730
+
+colcon build --symlink-install --packages-skip-build-finished
 
 echo ". ~/ros2_humble/install/local_setup.bash" >> ~/.bashrc
+
+
+
