@@ -165,7 +165,7 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
       "Received request: " <<
       rosidl_generator_traits::data_type<typename ServiceT::Request>();
       // removed
-      RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
+      RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str().c_str());
       //RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
   }
 #endif
