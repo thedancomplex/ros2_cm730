@@ -117,7 +117,8 @@ void Cm730Controller::handleStaticInfo(BulkReadClient::SharedFuture response)
   // removed
   RCLCPP_INFO(
     get_logger(),
-    "Received static CM730 info; # of results: " + std::to_string(results.size()).c_str());
+    strcat("Received static CM730 info; # of results: ", std::to_string(results.size()).c_str()));
+    //"Received static CM730 info; # of results: " + std::to_string(results.size()).c_str());
 
   // CM730
   auto cm730Result = results[0];
