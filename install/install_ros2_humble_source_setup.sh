@@ -1,3 +1,6 @@
+HUMBLE_INSTALL_DIR=~/ros2_humble/
+DEB_VERSION=$(env -i bash -c '. /etc/os-release; echo $VERSION_CODENAME')
+
 locale  # check for UTF-8
 
 sudo apt update && sudo apt install locales
@@ -15,7 +18,6 @@ sudo add-apt-repository universe
 sudo apt update && sudo apt install curl gnupg lsb-release
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 
-DEB_VERSION=$(env -i bash -c '. /etc/os-release; echo $VERSION_CODENAME')
 
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $DEB_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
@@ -64,15 +66,16 @@ sudo make install
 
 cd $THE_DIR
 
-
 sudo systemctl mask brltty.path
 sudo systemctl mask brltty
 
 
-mkdir -p ~/ros2_humble/src
-cd ~/ros2_humble
-wget https://raw.githubusercontent.com/ros2/ros2/humble/ros2.repos
-vcs import src < ros2.repos
+mkdir -p $HUMBLE_INSTALL_DIR/src
+cp ros2.repos.32bit $HUMBLE_INSTALL_DIR/
+
+cd $HUMBLE_INSTALL_DIR
+#wget https://raw.githubusercontent.com/ros2/ros2/humble/ros2.repos
+vcs import src < ros2.repos.32bit
 
 sudo apt upgrade
 
