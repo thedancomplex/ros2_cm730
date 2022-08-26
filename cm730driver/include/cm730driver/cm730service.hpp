@@ -186,6 +186,7 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
       str << int{txPacket[i]} << " ";
     }
     // removed
+    RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str().c_str());
     //RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
   }
 #endif
@@ -241,6 +242,7 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
           str << int{rxPacket[i]} << " ";
         }
 	// removed
+        RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str().c_str());
         //RCLCPP_DEBUG(rclcpp::get_logger("cm730service"), str.str());
       }
 #endif
@@ -261,6 +263,7 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
       str << int{rxPacket[i]} << " ";
     }
     // removed
+    RCLCPP_ERROR(rclcpp::get_logger("cm730service"), str.str().c_str());
     //RCLCPP_ERROR(rclcpp::get_logger("cm730service"), str.str());
     response->error = ErrorFlag::CORRUPT_RESPONSE_ERROR;
     return;
@@ -270,14 +273,10 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
   if (rxPacket[ADDR_ERROR] != 0) {
 
     // removed
-    /*
-    std::string str = "Received error byte: ";
-    char const *c = str.data();
     RCLCPP_ERROR(
       rclcpp::get_logger("cm730service"),
-      c + std::to_string(rxPacket[ADDR_ERROR]));
+      strcat("Received error byte: " , std::to_string(rxPacket[ADDR_ERROR]).c_str()));
     response->error = rxPacket[ADDR_ERROR];
-    */
     return;
   }
 
