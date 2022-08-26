@@ -93,8 +93,10 @@ InstallCm730()
   sudo systemctl mask brltty.path
   sudo systemctl mask brltty
   cd $HUMBLE_INSTALL_DIR/src
+  rm -rf ros2_cm730
   git clone https://github.com/thedancomplex/ros2_cm730
 
+  cd $HUMBLE_INSTALL_DIR
   colcon build --symlink-install --packages-skip-build-finished
 }
 
@@ -103,7 +105,7 @@ ShowUsage()
 	echo 
 	echo '==================================='
 	echo '==================================='
-	echo '====== ROS2 and CM270 Install======'
+	echo '====== ROS2 and CM730 Install======'
 	echo '======  for the Darwin OP    ======'
 	echo '==================================='
 	echo '======== Daniel M. Lofaro ========='
@@ -113,7 +115,7 @@ ShowUsage()
 	echo ''
 	echo 'ros2   : installs ros 2 from source'
         echo '         (~24hr on Darwin OPs CPU) '
-	echo 'cm720  : installs cm720 (ros2)     '
+	echo 'cm730  : installs cm730 (ros2)     '
 	echo '         drivers                   '
 	echo
 }
@@ -124,8 +126,8 @@ case "$1" in
 		InstallRos2 $@
 	;;
 	
-	'cm720' )
-		InstallCm720 $@
+	'cm730' )
+		InstallCm730 $@
 	;;
 	
 	* )
