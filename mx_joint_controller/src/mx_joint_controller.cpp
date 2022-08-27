@@ -81,7 +81,9 @@ MxJointController::MxJointController()
         [&](std::string const & name) -> int {
           auto iter = std::find(jointNames.begin(), jointNames.end(), name);
           if (iter == jointNames.end()) {
-            RCLCPP_ERROR(get_logger(), "Unknown joint: " + name);
+	  // removed
+            RCLCPP_ERROR(get_logger(), name);
+            //RCLCPP_ERROR(get_logger(), "Unknown joint: " + name);
             return -1;
           }
           return std::distance(jointNames.begin(), iter);
@@ -95,7 +97,9 @@ MxJointController::MxJointController()
         [ = ](float value) -> uint8_t {
           auto v = unsigned(value * 8);
           if (v > 254) {
-            RCLCPP_WARN(get_logger(), "P gain too high: " + std::to_string(value));
+	    // removed
+            RCLCPP_WARN(get_logger(), std::to_string(value));
+            //RCLCPP_WARN(get_logger(), "P gain too high: " + std::to_string(value));
             v = 254;
           }
           return v;
@@ -107,7 +111,9 @@ MxJointController::MxJointController()
         [ = ](float value) -> uint8_t {
           auto v = unsigned(value * 2048 / 1000);
           if (v > 254) {
-            RCLCPP_WARN(get_logger(), "I gain too high: " + std::to_string(value));
+	    // removed
+            RCLCPP_WARN(get_logger(), std::to_string(value));
+            //RCLCPP_WARN(get_logger(), "I gain too high: " + std::to_string(value));
             v = 254;
           }
           return v;
@@ -119,7 +125,9 @@ MxJointController::MxJointController()
         [ = ](float value) -> uint8_t {
           auto v = unsigned(value * 1000 / 4);
           if (v > 254) {
-            RCLCPP_WARN(get_logger(), "D gain too high: " + std::to_string(value));
+	    // removed 
+            RCLCPP_WARN(get_logger(), std::to_string(value));
+            //RCLCPP_WARN(get_logger(), "D gain too high: " + std::to_string(value));
             v = 254;
           }
           return v;
