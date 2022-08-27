@@ -98,7 +98,7 @@ MxJointController::MxJointController()
           auto v = unsigned(value * 8);
           if (v > 254) {
 	    // removed
-            RCLCPP_WARN(get_logger(), std::to_string(value));
+            RCLCPP_WARN(get_logger(), std::to_string(value).c_str());
             //RCLCPP_WARN(get_logger(), "P gain too high: " + std::to_string(value));
             v = 254;
           }
@@ -112,7 +112,7 @@ MxJointController::MxJointController()
           auto v = unsigned(value * 2048 / 1000);
           if (v > 254) {
 	    // removed
-            RCLCPP_WARN(get_logger(), std::to_string(value));
+            RCLCPP_WARN(get_logger(), std::to_string(value).c_str());
             //RCLCPP_WARN(get_logger(), "I gain too high: " + std::to_string(value));
             v = 254;
           }
@@ -126,7 +126,7 @@ MxJointController::MxJointController()
           auto v = unsigned(value * 1000 / 4);
           if (v > 254) {
 	    // removed 
-            RCLCPP_WARN(get_logger(), std::to_string(value));
+            RCLCPP_WARN(get_logger(), std::to_string(value).c_str());
             //RCLCPP_WARN(get_logger(), "D gain too high: " + std::to_string(value));
             v = 254;
           }
