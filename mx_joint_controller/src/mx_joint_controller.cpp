@@ -82,7 +82,7 @@ MxJointController::MxJointController()
           auto iter = std::find(jointNames.begin(), jointNames.end(), name);
           if (iter == jointNames.end()) {
 	  // removed
-            RCLCPP_ERROR(get_logger(), name);
+            RCLCPP_ERROR(get_logger(), name.c_str());
             //RCLCPP_ERROR(get_logger(), "Unknown joint: " + name);
             return -1;
           }
