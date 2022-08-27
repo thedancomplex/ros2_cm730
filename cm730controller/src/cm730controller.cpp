@@ -357,7 +357,8 @@ void Cm730Controller::writeCommands()
         RCLCPP_INFO(
           get_logger(),
           //std::to_string(response.get()->error).c_str());
-          strcat("Command write finished, error: " , std::to_string(response.get()->error).c_str()));
+          std::to_string(response.get()->error).c_str());
+          //strcat("Command write finished, error: " , std::to_string(response.get()->error).c_str()));
           //std::to_string("Command write finished, error: ") + std::to_string(response.get()->error));
       });
   }
