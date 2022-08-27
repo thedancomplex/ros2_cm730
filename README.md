@@ -1,6 +1,13 @@
 # TODO:
 * Ros 2 for x86 (32bit) comptuer on the origonal Darwin-OP (i.e. a Fit-PC)
 
+# Note:
+* This master branch has some of the debugging and loggin removed to allow for compiling on a 32bit comput (i.e. the Darwin OP's Fit-PC)
+* Compiling Ros2 for 32 bit on the Darwin's computer will take about 24 hours to complete
+* The Ros2 install uses a customized repo document which excludes visulisations as some of the packages are not compatiable with a 32bit system.  Because this is meant to run on the robot the visuilisations are not needed
+* Compiling the CM730 drivers will take about 30 minutes
+* It is recomended to use the "screen" process when running the install incase the network connection is broken.
+
 # CM730
 
 This repository contains a suite of ROS 2 packages to work with the
