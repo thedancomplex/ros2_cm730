@@ -57,6 +57,7 @@ InstallRos2()
   sudo apt-get install qtbase5-dev
   sudo apt-get install qtdeclarative5-dev
   sudo apt install python-is-python3
+  sudo pip3 install netifaces
 
 #  THE_DIR=$(pwd)
 #
