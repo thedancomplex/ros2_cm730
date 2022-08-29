@@ -59,6 +59,11 @@ InstallRos2()
   sudo apt install python-is-python3
   sudo pip3 install netifaces
 
+
+  # Remove  root access for serial port
+  sudo apt remove modemmanager
+#  sudo usermod -a -G dialout username
+
 #  THE_DIR=$(pwd)
 #
 #  cd /tmp/
