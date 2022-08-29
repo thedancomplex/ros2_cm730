@@ -56,6 +56,7 @@ InstallRos2()
   sudo apt install libqt5core5a
   sudo apt-get install qtbase5-dev
   sudo apt-get install qtdeclarative5-dev
+  sudo apt install python-is-python3
 
 #  THE_DIR=$(pwd)
 #
