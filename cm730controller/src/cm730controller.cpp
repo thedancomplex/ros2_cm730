@@ -209,6 +209,8 @@ void Cm730Controller::startLoop()
   for (auto i = uint8_t{1}; i <= 10; ++i) {
     mx28ReadRequest.device_id = i;
     dynamicBulkReadRequest->read_requests.push_back(mx28ReadRequest);
+    mx28ReadRequest.device_id = i;
+    dynamicBulkReadRequest->read_requests.push_back(mx28ReadRequest);
   }
 
   auto loop =
