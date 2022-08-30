@@ -206,9 +206,7 @@ void Cm730Controller::startLoop()
   mx28ReadRequest.address = uint8_t(MX28Table::PRESENT_POSITION_L);
 
   //for (auto i = uint8_t{1}; i <= 20; ++i) {
-  for (auto i = uint8_t{10}; i <= 20; ++i) {
-    mx28ReadRequest.device_id = i;
-    dynamicBulkReadRequest->read_requests.push_back(mx28ReadRequest);
+  for (auto i = uint8_t{1}; i <= 20; ++i) {
     mx28ReadRequest.device_id = i;
     dynamicBulkReadRequest->read_requests.push_back(mx28ReadRequest);
   }
