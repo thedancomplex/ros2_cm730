@@ -223,11 +223,12 @@ void Cm730Controller::startLoop()
 
 void Cm730Controller::handleDynamicInfo(BulkReadClient::SharedFuture response)
 {
+	/*
   if (response.get()->error != 0) {
     RCLCPP_ERROR(get_logger(), "Bulk read failed!");
-    RCLCPP_ERROR(get_logger(), response);
     return;
   }
+  */
 
   auto cm730Result = response.get()->results[0];
   auto dynamicCm730Info = std::make_shared<CM730RamTable>();
