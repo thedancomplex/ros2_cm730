@@ -225,6 +225,7 @@ void Cm730Controller::handleDynamicInfo(BulkReadClient::SharedFuture response)
 {
   if (response.get()->error != 0) {
     RCLCPP_ERROR(get_logger(), "Bulk read failed!");
+    RCLCPP_ERROR(get_logger(), response.data());
     return;
   }
 
