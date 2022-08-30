@@ -210,9 +210,9 @@ void Cm730Service<INSTR, ServiceT, Derived, CHECK_CHECKSUM>::handle(
     // Check if we have timed out and give up
     auto readingTime = mClock->now() - readStartTime;
     auto delta_ms = readingTime.nanoseconds() / 1e6;
-    //if (delta_ms > 15) {
+    if (delta_ms > 15) {
     // Changed - Dan
-    if (delta_ms > 2000) {
+//    if (delta_ms > 2000) {
       RCLCPP_ERROR(rclcpp::get_logger("cm730service"), "Timed out");
       response->error = ErrorFlag::TIMEOUT_ERROR;
       return;
